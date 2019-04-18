@@ -1,4 +1,4 @@
-# Plugin for scrolling wrapped lines
+# Scroll wrapped lines
 This plugin was designed to help me
 edit LaTeX, markdown, and other such non-programmatic
 documents with heavily wrapped lines.
