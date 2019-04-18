@@ -1,0 +1,8 @@
+# Template .gitignore for new repos #
+#####################################
+# Vim session files and swap files, from various points in my history
+.[sS]ession.*
+.vimsession
+.vimtags
+.*.sw[a-z]
+*.tmp
