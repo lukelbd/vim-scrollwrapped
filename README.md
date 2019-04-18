@@ -9,8 +9,8 @@ when navigating documents. The fundamental problem is that VIM tries to
 jump by a number of lines equaling **exactly** one-half page height
 -- but because the first line in the viewer
 is constrained to always be the **start** of a line, not a line continuation
-fragment, this is often causes the line on which the **cursor** is positioned
-to get yanked up-and-down the screen as you scroll.
+fragment, this often causes the line on which the **cursor** is positioned
+to get yanked up-and-down the screen.
 
 With this plugin, the half-page scrolling commands `<C-d>` and `<C-u>`
 are overridden so that, instead of scrolling by **exactly**
