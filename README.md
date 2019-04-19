@@ -34,6 +34,7 @@ one-half or one-quarter the window height, the plugin scrolls
 by as close as possible to one-half or one-quarter
 the window height **without messing up the relative cursor line position**.
 
+
 # Installation
 Install with your favorite [plugin manager](https://vi.stackexchange.com/questions/388/what-is-the-difference-between-the-vim-plugin-managers).
 I highly recommend the [`vim-plug`](https://github.com/junegunn/vim-plug) manager,
@@ -41,5 +42,5 @@ in which case you can install this plugin by adding
 ```
 Plug 'lukelbd/vim-scrollwrapped'
 ```
-to your `.vimrc`.
+to your `~/.vimrc`.
 
