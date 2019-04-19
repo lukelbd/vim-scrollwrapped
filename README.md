@@ -8,13 +8,13 @@ In the presence of wrapped lines, the default scrolling maps `<C-d>` and
 the cursor to jump around erratically. This is extremely disorienting
 when navigating documents.
 The fundamental problem is that VIM tries to
-jump by a number of lines equaling **exactly** one-half page height
+jump by a number of lines equaling exactly one-half page height
 -- but because the first line in the viewer
-is constrained to always be the **start** of a line, not a line continuation
+is constrained to always be the start of a line, not a line continuation
 fragment, this often causes the line on which the **cursor** is positioned
 to get yanked up-and-down the screen.
 
-This plugin corrects this behavior.
+This plugin corrects this annoying behavior.
 
 ## Normal mode maps
 This plugin overrides the half-page scrolling maps `<C-d>` and `<C-u>` and
