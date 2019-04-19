@@ -19,9 +19,14 @@ without messing up the relative cursor line position.
 This plugin also introduces new quarter-page scrolling commands
 `<C-j>` and `<C-k>` are also introduced.
 
-# Installation
-Install with your favorite [plugin manager](https://vi.stackexchange.com/questions/388/what-is-the-difference-between-the-vim-plugin-managers). I highly recommend the `[vim-plug](https://github.com/junegunn/vim-plug)` manager, with which you can install this plugin by adding
-```
-Plug 'lukelbd/vim-scrollwrapped'
-```
-to your `.vimrc` file.
+
+
+  # Installation
+  Install with your favorite [plugin manager](https://vi.stackexchange.com/questions/388/what-is-the-difference-between-the-vim-plugin-managers).
+  I highly recommend the [`vim-plug`](https://github.com/junegunn/vim-plug)` manager,
+  in which case you can install this plugin by adding
+  ```
+  Plug 'lukelbd/vim-scrollwrapped'
+  ```
+  to your `.vimrc`.
+  
