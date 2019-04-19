@@ -13,6 +13,75 @@
 "best to just let cursor get 'pushed' up the screen when this happens.
 "Note: If cursor moves down screen instead of up the screen, some shit is wrong yo.
 "------------------------------------------------------------------------------"
+" Related stuff
+"------------------------------------------------------------------------------"
+"Autocomamnd
+if !exists('g:scrollwrapped_wrap_filetypes')
+  let g:scrollwrapped_wrap_filetypes=['bib','tex','markdown','rst','liquid']
+endif
+augroup wrap_toggle
+  au!
+  au FileType * exe 'WrapToggle '.(index(g:scrollwrapped_wrap_filetypes, &ft)!=-1)
+augroup END
+"Functions and command for toggling 'line wrapping' (with associated settings)
+"and 'literal tabs' (so far just one option)
+function! s:wraptoggle(...)
+  if a:0 "if non-zero number of args
+    let toggle=a:1
+  elseif !exists('b:wrap_mode')
+    let toggle=1
+  else
+    let toggle=1-b:wrap_mode
+  endif
+  if toggle==1
+    "Display options that make more sense with wrapped lines
+    let b:wrap_mode=1
+    let &l:scrolloff=0
+    let &l:wrap=1
+    let &l:colorcolumn=0
+    "Basic wrap-mode navigation, always move visually
+    "Still might occasionally want to navigate by lines though, so remap those to g
+    "Use noremap instead of nnoremap, so works in *operator-pending mode*
+    noremap  <buffer> k  gk
+    noremap  <buffer> j  gj
+    noremap  <buffer> ^  g^
+    noremap  <buffer> $  g$
+    noremap  <buffer> 0  g0
+    noremap  <buffer> gj j
+    noremap  <buffer> gk k
+    noremap  <buffer> g^ ^
+    noremap  <buffer> g$ $
+    noremap  <buffer> g0 0
+    nnoremap <buffer> A  g$a
+    nnoremap <buffer> I  g^i
+    nnoremap <buffer> gA A
+    nnoremap <buffer> gI I
+  else
+    "Disable previous options
+    let b:wrap_mode=0
+    let &l:scrolloff=&g:scrolloff
+    let &l:wrap=0
+    let &l:colorcolumn=(has('gui_running') ? '0' : &g:colorcolumn)
+    "Disable previous maps
+    silent! unmap  <buffer> k
+    silent! unmap  <buffer> j
+    silent! unmap  <buffer> ^
+    silent! unmap  <buffer> $
+    silent! unmap  <buffer> 0
+    silent! unmap  <buffer> gj
+    silent! unmap  <buffer> gk
+    silent! unmap  <buffer> g^
+    silent! unmap  <buffer> g$
+    silent! unmap  <buffer> g0
+    silent! nunmap <buffer> A
+    silent! nunmap <buffer> I
+    silent! nunmap <buffer> gA
+    silent! nunmap <buffer> gI
+  endif
+endfunction
+command! -nargs=? WrapToggle call <sid>wraptoggle(<args>)
+
+"------------------------------------------------------------------------------"
 "Bindings
 "------------------------------------------------------------------------------"
 "Normal mode maps

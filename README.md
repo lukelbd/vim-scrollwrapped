@@ -14,7 +14,15 @@ is constrained to always be the start of a line, not a line continuation
 fragment, this often causes the line on which the **cursor** is positioned
 to get yanked up-and-down the screen.
 
-This plugin corrects this annoying behavior.
+This plugin corrects this annoying behavior. If line-wrapping is disabled, this
+plugin has no effect.
+
+## Commands
+* `:WrapToggle`: Toggles wrapping on-and-off.
+
+## Global options
+* `g:scrollwrapped_wrap_filetypes`: Vim-list of strings specifying
+  filetypes for which we want `:WrapToggle` to be called by default.
 
 ## Normal mode maps
 This plugin overrides the half-page scrolling maps `<C-d>` and `<C-u>` and
