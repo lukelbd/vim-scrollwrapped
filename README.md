@@ -23,6 +23,7 @@ plugin has no effect.
 ## Global options
 * `g:scrollwrapped_wrap_filetypes`: Vim-list of strings specifying
   filetypes for which we want `:WrapToggle` to be called by default.
+  By default, this is `['bib','tex','markdown','rst','liquid']`.
 
 ## Normal mode maps
 This plugin overrides the half-page scrolling maps `<C-d>` and `<C-u>` and
