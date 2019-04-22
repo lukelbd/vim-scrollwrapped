@@ -25,7 +25,7 @@ plugin has no effect.
   filetypes for which we want `:WrapToggle` to be called by default.
   By default, this is `['bib','tex','markdown','rst','liquid']`.
 
-## Normal mode maps
+## Maps
 This plugin overrides the half-page scrolling maps `<C-d>` and `<C-u>` and
 introduces new quarter-page scrolling maps `<C-j>` and `<C-k>`.
 
