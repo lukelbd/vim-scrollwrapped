@@ -32,7 +32,9 @@ the window height **without messing up the relative cursor line position**.
 ## Demonstration
 The below demonstrates how `vim-scrollwrapped` makes navigating LaTeX
 documents with heavily wrapped lines a smooth experience, even with a tiny
-terminal window. Note that the cursor **does not move up and down the screen**.
+terminal window. Note that the cursor **does not move up and down the screen**
+when scrolling with `<C-d>`, `<C-u>`, `<C-j>`, `<C-k>` -- only when I adjust its
+relative position with `j` and `k`.
 
 <!-- ![](rec.gif) -->
 <img src="light.gif" width="500">
