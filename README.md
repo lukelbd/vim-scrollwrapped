@@ -3,6 +3,7 @@ In the presence of wrapped lines, the default scrolling maps `<C-d>` and
 `<C-u>` can cause
 the cursor to jump around erratically. This is extremely disorienting
 when navigating documents.
+
 The fundamental problem is that VIM tries to
 jump by a number of lines equaling exactly one-half page height
 -- but because the first line in the viewer
