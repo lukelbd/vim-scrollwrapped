@@ -3,7 +3,8 @@
 .*.sw[a-z]
 # Sample files and .cast recording
 # Just run asciinema rec rec.json, and then
-# ascii2gif rec.json rec.gif.
+# ascii2gif -t solarized-light rec.json rec.gif.
+# or without the -t flag for dark mode.
 *.tex
 *.json
 

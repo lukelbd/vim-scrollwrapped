@@ -3,15 +3,16 @@ In the presence of wrapped lines, the default scrolling maps `<C-d>` and
 `<C-u>` can cause
 the cursor to jump around erratically. This is extremely disorienting
 when navigating documents.
+
 The fundamental problem is that VIM tries to
 jump by a number of lines equaling exactly one-half page height
 -- but because the first line in the viewer
 is constrained to always be the start of a line, not a line continuation
-fragment, this often causes the line on which the **cursor** is positioned
-to get yanked up-and-down the screen.
+fragment, this often causes the screen-relative line on which the cursor is positioned
+to change.
 
-This plugin corrects this annoying behavior. If line-wrapping is disabled, this
-plugin has no effect.
+This plugin corrects this annoying behavior.
+When line wrapping is disabled, this plugin has no effect.
 
 ## Maps
 This plugin overrides the half-page scrolling maps `<C-d>` and `<C-u>` and
@@ -22,22 +23,19 @@ one-half or one-quarter the window height, the plugin scrolls
 by as close as possible to one-half or one-quarter
 the window height **without messing up the relative cursor line position**.
 
-## Command
-Use the commands `:WrapToggle 1` and `:WrapToggle 0` to turn line-wrapping on and off. Use `:WrapToggle` with no arguments to toggle the wrapping mode. This command also remaps applies
-a series of buffer-local remaps, e.g. from `j` to `gj`, so that normal-mode cursor motion
-follows visually wrapped lines.
+## Commands
+`:WrapToggle`: Toggles line wrapping for the current buffer and applies a series of buffer-local remaps (e.g. `nnoremap <buffer> gj j`) so that normal-mode motion keys follow the wrapped lines instead of the actual lines. Call without arguments to toggle the wrapping mode on and off. Call with `0` and `1` to set the wrapping mode to the on or off states explicitly.
 
-## Settings
-Use `g:scrollwrapped_wrap_filetypes` to specify the
-filetypes for which `:WrapToggle` is called when the file is opened.
-By default, this is `['bib','tex','markdown','rst','liquid']`.
+## Options
+`g:scrollwrapped_wrap_filetypes`: Specifies the filetypes for which `:WrapToggle` is called when the file is opened. By default, this is `['bib','tex','markdown','rst','liquid']`.
 
 ## Demonstration
-The below demonstrates how `vim-scrollwrapped` makes navigating a LaTeX
-document with heavily wrapped lines in a small terminal window much easier.
+The below demonstrates how `vim-scrollwrapped` makes navigating LaTeX
+documents with heavily wrapped lines a smooth experience, even with a tiny
+terminal window. Note that the cursor **does not move up and down the screen**.
 
 <!-- ![](rec.gif) -->
-<img src="rec.gif" width="500">
+<img src="light.gif" width="500">
 
 # Installation
 Install with your favorite [plugin manager](https://vi.stackexchange.com/questions/388/what-is-the-difference-between-the-vim-plugin-managers).
