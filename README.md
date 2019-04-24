@@ -17,7 +17,6 @@ When line wrapping is disabled, this plugin has no effect.
 ## Maps
 This plugin overrides the half-page scrolling maps `<C-d>` and `<C-u>` and
 introduces new quarter-page scrolling maps `<C-j>` and `<C-k>`.
-
 For each of these maps, instead of scrolling by exactly
 one-half or one-quarter the window height, the plugin scrolls
 by as close as possible to one-half or one-quarter
