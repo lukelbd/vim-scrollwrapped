@@ -36,7 +36,7 @@ when scrolling with `<C-d>`, `<C-u>`, `<C-j>`, `<C-k>`. It only moves when I adj
 relative position with `j` and `k`.
 
 <!-- ![](rec.gif) -->
-<img src="light.gif" width="500">
+<img src="rec.gif" width="600">
 
 # Installation
 Install with your favorite [plugin manager](https://vi.stackexchange.com/questions/388/what-is-the-difference-between-the-vim-plugin-managers).
