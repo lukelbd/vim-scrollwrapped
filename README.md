@@ -1,4 +1,4 @@
-# Scroll wrapped lines
+# Scrolling wrapped
 This plugin was designed to help me
 edit LaTeX, markdown, and other such non-programmatic
 documents with heavily wrapped lines.
@@ -17,13 +17,14 @@ to get yanked up-and-down the screen.
 This plugin corrects this annoying behavior. If line-wrapping is disabled, this
 plugin has no effect.
 
-## Commands
-* `:WrapToggle`: Toggles wrapping on-and-off.
+## Overview
+Use the commands `:WrapToggle 1` and `:WrapToggle 0` to turn line-wrapping on and off. Use `:WrapToggle` with no arguments to toggle the wrapping mode. This command also remaps applies
+a series of buffer-local remaps, e.g. from `j` to `gj`, so that normal-mode cursor motion
+follows visually wrapped lines.
 
-## Global options
-* `g:scrollwrapped_wrap_filetypes`: Vim-list of strings specifying
-  filetypes for which we want `:WrapToggle` to be called by default.
-  By default, this is `['bib','tex','markdown','rst','liquid']`.
+Use `g:scrollwrapped_wrap_filetypes` to specify the
+filetypes for which `:WrapToggle` is called when the file is opened.
+By default, this is `['bib','tex','markdown','rst','liquid']`.
 
 ## Maps
 This plugin overrides the half-page scrolling maps `<C-d>` and `<C-u>` and
@@ -34,6 +35,11 @@ one-half or one-quarter the window height, the plugin scrolls
 by as close as possible to one-half or one-quarter
 the window height **without messing up the relative cursor line position**.
 
+## Demonstration
+The below demonstrates how `vim-scrollwrapped` makes navigating a LaTeX
+document with heavily wrapped lines in a small terminal window much easier.
+
+![](rec.gif)
 
 # Installation
 Install with your favorite [plugin manager](https://vi.stackexchange.com/questions/388/what-is-the-difference-between-the-vim-plugin-managers).

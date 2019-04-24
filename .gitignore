@@ -1,3 +1,9 @@
 # Vim session files and swap files
 .vimsession
 .*.sw[a-z]
+# Sample files and .cast recording
+# Just run asciinema rec rec.json, and then
+# ascii2gif rec.json rec.gif.
+*.tex
+*.json
+

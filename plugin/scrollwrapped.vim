@@ -3,7 +3,7 @@
 " Author: Luke Davis (lukelbd@gmail.com)
 " Date:   2018-09-03
 "------------------------------------------------------------------------------"
-"Distustingly over-engineered solution to scrolling wrapped lines in vim
+"Disgustingly over-engineered solution to scrolling wrapped lines in vim
 "Note: vim forces us to always start at beginning of wrapped line, but don't
 "necessarily have to end on one. So, scrolling is ***always controlled***
 "by the lines near the top of the screen!
@@ -266,7 +266,6 @@ function! s:scroll(target,mode,move)
     if verb
       echom 'current line: '.curline.' virtual num: '.curline_offset.' colstarts: '.join(colstarts,', ')
     endif
-    "--------------------------------------------------------------------------"
     "Determine the new cursorline, and offset down that line
     "Possible that the line at top of screen moves while the current much
     "bigger line does not, so account for that (if statement below)
@@ -333,7 +332,6 @@ function! s:scroll(target,mode,move)
         echom 'destination line: '.curline.' remainder: '.remainder.' destination height: '.lineheight.' offset: '.curline_offset
       endif
     endif
-    "--------------------------------------------------------------------------"
     "Get the column number for winrestview
     "The min() call is to avoid errors that crop up due to those brute-force
     "while-loop breaks above when tolerance is exceeded
