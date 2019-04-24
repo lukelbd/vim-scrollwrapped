@@ -1,8 +1,4 @@
-# Scrolling wrapped
-This plugin was designed to help me
-edit LaTeX, markdown, and other such non-programmatic
-documents with heavily wrapped lines.
-
+# Scrolling wrapped lines
 In the presence of wrapped lines, the default scrolling maps `<C-d>` and
 `<C-u>` can cause
 the cursor to jump around erratically. This is extremely disorienting
@@ -39,7 +35,8 @@ the window height **without messing up the relative cursor line position**.
 The below demonstrates how `vim-scrollwrapped` makes navigating a LaTeX
 document with heavily wrapped lines in a small terminal window much easier.
 
-![](rec.gif)
+<!-- ![](rec.gif) -->
+<img src="rec.gif" width="500">
 
 # Installation
 Install with your favorite [plugin manager](https://vi.stackexchange.com/questions/388/what-is-the-difference-between-the-vim-plugin-managers).
