@@ -19,24 +19,26 @@
 if !exists('g:scrollwrapped_wrap_filetypes')
   let g:scrollwrapped_wrap_filetypes=['bib','tex','markdown','rst','liquid']
 endif
-augroup wrap_toggle
+if !exists('g:scrollwrapped_scrolloff')
+  let g:scrollwrapped_scrolloff=4
+endif
+augroup scrollwrapped
   au!
   au FileType * exe 'WrapToggle '.(index(g:scrollwrapped_wrap_filetypes, &ft)!=-1)
+  au BufEnter * if &l:wrap | let &g:scrolloff=0 | else | let &g:scrolloff=g:scrollwrapped_scrolloff | endif
 augroup END
 "Functions and command for toggling 'line wrapping' (with associated settings)
 "and 'literal tabs' (so far just one option)
+"Warning: scrollwrapped is a local option only!
 function! s:wraptoggle(...)
   if a:0 "if non-zero number of args
     let toggle=a:1
-  elseif !exists('b:wrap_mode')
-    let toggle=1
   else
-    let toggle=1-b:wrap_mode
+    let toggle=(1-&l:wrap)
   endif
   if toggle==1
     "Display options that make more sense with wrapped lines
-    let b:wrap_mode=1
-    let &l:scrolloff=0
+    let &g:scrolloff=0 "this setting is global! need an autocmd!
     let &l:wrap=1
     let &l:colorcolumn=0
     "Basic wrap-mode navigation, always move visually
@@ -58,8 +60,7 @@ function! s:wraptoggle(...)
     nnoremap <buffer> gI I
   else
     "Disable previous options
-    let b:wrap_mode=0
-    let &l:scrolloff=&g:scrolloff
+    let &g:scrolloff=g:scrollwrapped_scrolloff
     let &l:wrap=0
     let &l:colorcolumn=(has('gui_running') ? '0' : &g:colorcolumn)
     "Disable previous maps
@@ -180,8 +181,8 @@ function! s:scroll(target,mode,move)
     echom "Error: Mode string must be either [u]p or [d]own."
     return ''
   endif
-  let scrolloff=&l:scrolloff
-  let &l:scrolloff=0
+  let scrolloff=&g:scrolloff "global only!
+  let &g:scrolloff=0
   if a:mode=='u'
     let stopline=1
     let motion=-1
@@ -357,7 +358,7 @@ function! s:scroll(target,mode,move)
   "Finally restore to the new column
   "----------------------------------------------------------------------------"
   call winrestview({'topline':max([topline,0]), 'lnum':curline, 'leftcol':0, 'col':curcol})
-  let &l:scrolloff=scrolloff
+  let &g:scrolloff=scrolloff
   if verb
     echom 'WinLine: '.winline.' to '.winline()
   endif
