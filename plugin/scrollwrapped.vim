@@ -36,7 +36,7 @@ function! s:wraptoggle(...)
   else
     let toggle = (1-&l:wrap)
   endif
-  if toggle==1
+  if toggle == 1
     " Display options that make more sense with wrapped lines
     let &g:scrolloff = 0 " this setting is global! need an autocmd!
     let &l:wrap = 1
@@ -133,7 +133,7 @@ function! s:wrapped_line_props(mode,line)
   let colstarts = [1]
   let lineheight = 1
   let counter = 0
-  while len(string)+1>=width " must include newline character
+  while len(string)+1 >= width " must include newline character
     let counter += 1
     " Determine offset due to 'linebreak' feature
     " Note: This won't be perfect! Consecutive non-whitespace characters
@@ -155,12 +155,12 @@ function! s:wrapped_line_props(mode,line)
       echom 'width: '.width.' indent: '.n_indent.' string: '.(width-offset).' '.len(string)
     endif
     let string = repeat(' ',n_indent).substitute(string[(width-offset):],'^ \+','','')
-    if counter==s:tolerance
+    if counter == s:tolerance
       " echom "Warning: Could not determine line height."
       break
     endif
   endwhile
-  return (a:mode=='l' ? lineheight : colstarts)
+  return (a:mode == 'l' ? lineheight : colstarts)
   " echom 'lineheight: '.lineheight
 endfunction
 command! LineHeight echom <sid>wrapped_line_props('l','.')
@@ -183,7 +183,7 @@ function! s:scroll(target,mode,move)
   endif
   let scrolloff = &g:scrolloff " global only!
   let &g:scrolloff = 0
-  if a:mode=='u'
+  if a:mode == 'u'
     let stopline = 1
     let motion = -1
   else
@@ -198,10 +198,10 @@ function! s:scroll(target,mode,move)
     " Determine new line iteratively
     let scrolled = 0
     let topline_init = line('w0')
-    let topline = (a:mode=='u' ? topline_init : topline_init-1) " initial
+    let topline = (a:mode == 'u' ? topline_init : topline_init-1) " initial
     let lineheight = s:wrapped_line_props('l',topline)
     let counter = 0
-    while scrolled<=a:target && topline!=stopline
+    while scrolled <= a:target && topline!=stopline
       let counter += 1
       let topline += motion
       let lineheight = s:wrapped_line_props('l',topline)
@@ -209,14 +209,14 @@ function! s:scroll(target,mode,move)
       if lineheight==-1 " indicates error
         return ''
       endif
-      if counter==s:tolerance
+      if counter == s:tolerance
         " echom "Warning: Failed determining new line!"
         break
       endif
     endwhile
-    let topline = (a:mode=='u' ? topline : topline+1)
-    " if a:mode=='u' && line('w0')==1
-    if topline==stopline
+    let topline = (a:mode == 'u' ? topline : topline+1)
+    " if a:mode == 'u' && line('w0') == 1
+    if topline == stopline
       let scrolled = a:target
     endif
     if verb
@@ -259,7 +259,7 @@ function! s:scroll(target,mode,move)
     let curline_height = len(colstarts)
     if index==-1 " cursor is sitting on the last virtual line of 'curline'
       let curline_offset = curline_height-1 " offset from first virtual line of current line
-    elseif index==0 " should never happen -- would mean cursor is in column '0' because colstarts always starts with 1
+    elseif index == 0 " should never happen -- would mean cursor is in column '0' because colstarts always starts with 1
       echom "Error: What the fudge." | return ''
     else
       let curline_offset = index-1
@@ -272,7 +272,7 @@ function! s:scroll(target,mode,move)
     " bigger line does not, so account for that (if statement below)
     " The scroll_init will be the *required* visual lines scrolled if
     " we move the cursor line up or down
-    if a:mode=='u'
+    if a:mode == 'u'
       let scroll_init = curline_offset " how many virtual lines to the first one
     else
       let scroll_init = curline_height-curline_offset " how many virtual lines to start of next line (e.g. if height is 2, offset is 1, we're at the bottom; just scroll one more)
@@ -295,7 +295,7 @@ function! s:scroll(target,mode,move)
       let qline = curline
       let scroll = scroll_init
       let scrolled_cur = scroll_init " virtual to reach (up) first one on this line or (down) first one on next line
-      while scrolled_cur<=scrolled
+      while scrolled_cur <= scrolled
         let counter += 1
        " Determine line height
        " Note the init scroll brought us to (up) start of this line, so we want to query text above it,
@@ -306,7 +306,7 @@ function! s:scroll(target,mode,move)
         let qline += motion " corresponds to (up) previous line or (down) this line.
         let lineheight = s:wrapped_line_props('l',qline) " necessary scroll to get to next/previous first line
         let scrolled_cur += lineheight " add, then test
-        if counter==s:tolerance
+        if counter == s:tolerance
           " echom "Warning: Failed determining line height."
           break
         endif
@@ -316,8 +316,8 @@ function! s:scroll(target,mode,move)
       " plus the lineheights
       let scrolled_cur -= lineheight " number of lines scrolled if we move up to first/last virtual line of curline
       let remainder = scrolled-scrolled_cur " number left
-      if a:mode=='u'
-        if remainder==0 " don't have to move to previous line at all
+      if a:mode == 'u'
+        if remainder == 0 " don't have to move to previous line at all
           let curline = qline+1
           let curline_offset = 0
         else
@@ -347,7 +347,7 @@ function! s:scroll(target,mode,move)
     endif
   else
     " If wrap not toggled, much simpler
-    if a:mode=='u'
+    if a:mode == 'u'
       let curline -= a:target
     else
       let curline += a:target
