@@ -17,7 +17,7 @@
 "------------------------------------------------------------------------------"
 " Autocomamnd
 if !exists('g:scrollwrapped_wrap_filetypes')
-  let g:scrollwrapped_wrap_filetypes = ['bib','tex','markdown','rst','liquid']
+  let g:scrollwrapped_wrap_filetypes = ['bib', 'tex', 'markdown', 'rst', 'liquid']
 endif
 if !exists('g:scrollwrapped_scrolloff')
   let g:scrollwrapped_scrolloff = 4
@@ -80,7 +80,7 @@ function! s:wraptoggle(...)
     silent! nunmap <buffer> gI
   endif
 endfunction
-command! -nargs=? WrapToggle call <sid>wraptoggle(<args>)
+command! -nargs=? WrapToggle call s:wraptoggle(<args>)
 
 "------------------------------------------------------------------------------"
 " Bindings
@@ -163,8 +163,8 @@ function! s:wrapped_line_props(mode,line)
   return (a:mode == 'l' ? lineheight : colstarts)
   " echom 'lineheight: '.lineheight
 endfunction
-command! LineHeight echom <sid>wrapped_line_props('l','.')
-command! ColStarts echom join(<sid>wrapped_line_props('c','.'),', ')
+command! LineHeight echom s:wrapped_line_props('l','.')
+command! ColStarts echom join(s:wrapped_line_props('c','.'),', ')
 
 "------------------------------------------------------------------------------"
 " Next the driver function:
