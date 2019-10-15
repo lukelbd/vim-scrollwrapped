@@ -23,10 +23,10 @@ one-half or one-quarter the window height, the plugin scrolls
 by as close as possible to one-half or one-quarter
 the window height **without messing up the relative cursor line position**.
 
-## Commands
+## Command
 `:WrapToggle` toggles line wrapping for the current buffer and applies a series of buffer-local remaps so that normal-mode motion keys follow the *wrapped lines* instead of the actual lines. For example, `gj` and `j` are swapped, `gk` and `k` are swapped, etc. Call `:WrapToggle` without arguments to toggle the wrapping mode on and off, or with `1` or `0` to set the wrapping mode to the on or off states.
 
-## Options
+## Option
 `g:scrollwrapped_wrap_filetypes` specifies the filetypes for which `:WrapToggle` is called when the file is opened. By default, this is `['bib','tex','markdown','rst','liquid']`.
 
 # Demonstration
