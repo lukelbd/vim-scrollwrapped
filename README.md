@@ -11,36 +11,21 @@ is constrained to always be the start of a line, not a line continuation
 fragment, this often causes the screen-relative line on which the cursor is positioned
 to change.
 
-This plugin corrects this annoying behavior.
-When line wrapping is disabled, this plugin has no effect.
+This plugin corrects this annoying behavior, as shown in the below gif. Even with a tiny window, the cursor does not move up and down during scrolling. It only moves when I adjust the cursor location with `j` and `k`.
+
+<!-- ![](rec.gif) -->
+<img src="rec.gif" width="600">
 
 # Documentation
-## Mappings
 This plugin overrides the half-page scrolling maps `<C-d>` and `<C-u>` and
-introduces new quarter-page scrolling maps `<C-j>` and `<C-k>`.
-
-For each of these maps, instead of scrolling by exactly
+introduces new quarter-page scrolling maps `<C-j>` and `<C-k>`. For each of these maps, instead of scrolling by exactly
 one-half or one-quarter the window height, the plugin scrolls
 by as close as possible to one-half or one-quarter
 the window height without messing up the relative cursor line position.
 
-## Command
-`:WrapToggle` toggles line wrapping for the current buffer. Call `:WrapToggle` without arguments to toggle the wrapping mode on and off, or with `1` or `0` to set the wrapping mode to the on or off states.
+`:WrapToggle` toggles line wrapping for the current buffer. Call `:WrapToggle` without arguments to toggle the wrapping mode on and off, or with `1` or `0` to set the wrapping mode to the on or off states. This also applies a series of buffer local normal mode mappings so that motion keys follow the *wrapped lines* instead of the actual lines. For example, `gj` and `j` are swapped, `gk` and `k` are swapped, etc.
 
-This also applies a series of buffer local normal mode mappings so that motion keys follow the *wrapped lines* instead of the actual lines. For example, `gj` and `j` are swapped, `gk` and `k` are swapped, etc.
-
-## Option
 `g:scrollwrapped_wrap_filetypes` specifies the filetypes for which `:WrapToggle` is called when the file is opened. By default, this is `['bib','tex','markdown','rst','liquid']`.
-
-# Demonstration
-The below demonstrates how `vim-scrollwrapped` makes navigating LaTeX
-documents with heavily wrapped lines a smooth experience, even with a tiny
-terminal window. Note that the cursor **does not move up and down the screen**
-when scrolling with `<C-d>`, `<C-u>`, `<C-j>`, `<C-k>`. It only moves when I adjust its
-relative position with `j` and `k`.
-
-<!-- ![](rec.gif) -->
-<img src="rec.gif" width="600">
 
 # Installation
 Install with your favorite [plugin manager](https://vi.stackexchange.com/questions/388/what-is-the-difference-between-the-vim-plugin-managers).
