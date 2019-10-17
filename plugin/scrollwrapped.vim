@@ -34,20 +34,18 @@ command! LineHeight echom string(scrollwrapped#wrapped_line_props('l', '.'))
 command! ColStarts echom string(scrollwrapped#wrapped_line_props('c', '.'))
 
 " Normal mode maps
-" Arrow keys are for macbook Karabiner mapping
-nnoremap <silent> <C-d>  :call scrollwrapped#scroll(winheight(0)/3,'d',1)<CR>
-nnoremap <silent> <C-u>  :call scrollwrapped#scroll(winheight(0)/3,'u',1)<CR>
-nnoremap <silent> <C-j>  :call scrollwrapped#scroll(winheight(0)/5,'d',1)<CR>
-nnoremap <silent> <C-k>  :call scrollwrapped#scroll(winheight(0)/5,'u',1)<CR>
-nnoremap <silent> <Down> :call scrollwrapped#scroll(winheight(0)/5,'d',1)<CR>
-nnoremap <silent> <Up>   :call scrollwrapped#scroll(winheight(0)/5,'u',1)<CR>
+nnoremap <silent> <C-f> :call scrollwrapped#scroll(winheight(0), 'd', 1)<CR>
+nnoremap <silent> <C-b> :call scrollwrapped#scroll(winheight(0), 'u', 1)<CR>
+nnoremap <silent> <C-d> :call scrollwrapped#scroll(winheight(0)/2, 'd', 1)<CR>
+nnoremap <silent> <C-u> :call scrollwrapped#scroll(winheight(0)/2, 'u', 1)<CR>
+nnoremap <silent> <C-j> :call scrollwrapped#scroll(winheight(0)/4, 'd', 1)<CR>
+nnoremap <silent> <C-k> :call scrollwrapped#scroll(winheight(0)/4, 'u', 1)<CR>
 
 " Closest reasonable thing for visual mode
-" Arrow keys are for macbook Karabiner mapping
-vnoremap <silent> <expr> <C-d>  eval(winheight(0)/3).'<C-e>'.eval(winheight(0)/3).'gj'
-vnoremap <silent> <expr> <C-u>  eval(winheight(0)/3).'<C-y>'.eval(winheight(0)/3).'gk'
-vnoremap <silent> <expr> <C-j>  eval(winheight(0)/5).'<C-e>'.eval(winheight(0)/5).'gj'
-vnoremap <silent> <expr> <C-k>  eval(winheight(0)/5).'<C-y>'.eval(winheight(0)/5).'gk'
-vnoremap <silent> <expr> <Down> eval(winheight(0)/5).'<C-e>'.eval(winheight(0)/5).'gj'
-vnoremap <silent> <expr> <Up>   eval(winheight(0)/5).'<C-y>'.eval(winheight(0)/5).'gk'
+vnoremap <silent> <expr> <C-f>  winheight(0) . '<C-e>' . winheight(0) . 'gj'
+vnoremap <silent> <expr> <C-b>  winheight(0) . '<C-y>' . winheight(0) . 'gk'
+vnoremap <silent> <expr> <C-d>  (winheight(0)/2) . '<C-e>' . (winheight(0)/2) . 'gj'
+vnoremap <silent> <expr> <C-u>  (winheight(0)/2) . '<C-y>' . (winheight(0)/2) . 'gk'
+vnoremap <silent> <expr> <C-j>  (winheight(0)/4) . '<C-e>' . (winheight(0)/4) . 'gj'
+vnoremap <silent> <expr> <C-k>  (winheight(0)/4) . '<C-y>' . (winheight(0)/4) . 'gk'
 
