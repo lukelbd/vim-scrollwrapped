@@ -20,7 +20,7 @@ the window height without messing up the relative cursor line position.
 
 `:WrapToggle` toggles line wrapping for the current buffer. Call this without arguments to toggle the wrapping mode on and off, or with `1` or `0` to set the wrapping mode to the on or off states. This also applies a series of buffer local normal mode mappings so that motion keys follow the *wrapped lines* instead of the actual lines. That is, the `j`, `k`, `^`, `$`, `0`, `A`, and `I` commands are swapped with the `gj`, `gk`, `g^`, `g$`, `g0`, `gA`, and `gI` commands.
 
-`g:scrollwrapped_wrap_filetypes` specifies the filetypes for which `:WrapToggle` is called when the file is opened. By default, this is `['bib', 'tex', 'markdown', 'rst', 'liquid']`.
+`g:scrollwrapped_wrap_filetypes` specifies the filetypes for which `:WrapToggle` is called automatically when the file is opened. By default, this is `['bib', 'tex', 'markdown', 'rst', 'liquid']`.
 
 # Installation
 Install with your favorite [plugin manager](https://vi.stackexchange.com/questions/388/what-is-the-difference-between-the-vim-plugin-managers).
