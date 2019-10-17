@@ -9,7 +9,7 @@ is constrained to always be the start of a line, not a line continuation
 fragment, this often causes the window relative cursor line
 to change.
 
-This plugin corrects this annoying behavior. as shown in the below gif. Even with a tiny window, the cursor does not move up and down during scrolling. It only moves when the cursor line is adjusted `j` and `k`. Although the cursor sometimes jumps from left to right, owing to vim trying to preserve the column position with scrolling, this is a vast improvement on the default vim scrolling behavior.
+This plugin corrects this annoying behavior (see the below gif). Even with a tiny window, the cursor does not move up and down during scrolling. It only moves when the cursor line is adjusted `j` and `k`. Although the cursor sometimes jumps from left to right, owing to vim trying to preserve the column position with scrolling, this is a vast improvement on the default vim scrolling behavior.
 
 <!-- ![](rec.gif) -->
 <img src="rec.gif" width="600">
