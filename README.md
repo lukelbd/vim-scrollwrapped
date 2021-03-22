@@ -1,7 +1,7 @@
 Scrolling wrapped lines
 =======================
 
-In the presence of wrapped lines, the default scrolling commands `<C-f>`, `<C-b>`,
+In the presence of wrapped lines, the default vim scrolling commands `<C-f>`, `<C-b>`,
 `<C-d>`, and `<C-u>` can cause the cursor position relative to the window to jump around
 erratically. This is extremely disorienting when navigating documents.
 
