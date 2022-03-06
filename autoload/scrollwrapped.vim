@@ -2,7 +2,7 @@
 " Functions for scrolling in presence of wrapped lines
 "-----------------------------------------------------------------------------"
 " Global settings
-let s:debug = 1
+let s:debug = 0
 let s:tolerance = 100
 
 " Helper functions
@@ -190,7 +190,6 @@ endfunction
 " * a:move is whether to move cursor across lines when there is nothing
 "   left to scroll, as with normal/builtin vim scrolling.
 function! scrollwrapped#scroll(nlines, updown, move) abort
-  let s:debug = 0
   let winline = winline()
   if 'ud' !~# a:updown
     echom 'Error: Mode string must be either [u]p or [d]own.'
