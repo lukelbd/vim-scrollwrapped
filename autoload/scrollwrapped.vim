@@ -5,15 +5,24 @@
 let s:debug = 1
 let s:tolerance = 100
 
-function! s:reverse(string) abort
-  " Reverse lines
+" Helper functions
+" Warning: The numberwidth will *lie* if you have more line numbers
+" than it permits, so must instead test the number of lines directly.
+function! s:reverse(string) abort  " reverse the lines
   return join(reverse(split(a:string, '.\zs')), '')
 endfunction
+function! s:numberwidth() abort
+  return (&l:nu || &l:rnu) * max([len(string(line('$'))) + 1, &l:numberwidth])
+endfunction
+function! s:signwidth() abort
+  return 2 * (&l:signcolumn ==# 'yes' || &l:signcolumn ==# 'auto'
+    \ && !empty(sign_getplaced(bufnr(), {'group': '*'})[0]['signs']))
+endfunction
 
+" Get next line accounting for closed folds
+" Note: Could include this as part of 'lineheight' but then folded lines would
+" count toward the number of scrolled lines, which we do not want.
 function! s:nextline(nlines, line) abort
-  " Get next line accounting for closed folds
-  " NOTE: Could include this as part of 'lineheight' but then folded lines would
-  " count toward the number of scrolled lines, which we do not want.
   let line = a:line
   if a:nlines < 0
     " Jump to start of fold if scrolling up one line puts us on new fold
@@ -42,19 +51,17 @@ function! s:nextline(nlines, line) abort
   return line
 endfunction
 
+" Determine number of folded lines between cursor and window top or bottom
+" Note: This is so far unused, but may be useful in future.
+" Note: Include fold *underneath cursor* if scrolling down, because vim reads the
+" line number as the first line in the fold. Do *not* include this if scrolling up.
 function! s:nfolded(updown) abort
-  " Determine number of folded lines between cursor and window top or bottom
-  " NOTE: This is so far unused, but may be useful in future.
-  " NOTE: Include fold *underneath cursor* if scrolling down, because vim reads the
-  " line number as the first line in the fold. Do *not* include this if scrolling up.
+  let count_folded = 0
   if 'ud' !~# a:updown
     echom 'Error: Mode string must be either [u]p or [d]own.'
     return
   endif
-
-  " Between here and top
-  let count_folded = 0
-  if a:updown ==# 'u'
+  if a:updown ==# 'u'  " between here and top
     let cline = line('.')  " exclude fold under cursor
     let topline = line('w0')
     while cline >= topline
@@ -65,9 +72,7 @@ function! s:nfolded(updown) abort
         let cline = fline
       endif
     endwhile
-
-  " Between here and bottom
-  else
+  else  " between here and bottom
     let botline = line('w$')
     let cline = line('.') - 1  " include fold under cursor
     while cline <= botline
@@ -79,24 +84,20 @@ function! s:nfolded(updown) abort
       endif
     endwhile
   endif
-
-  " Return number of extra lines
-  return count_folded
+  return count_folded  " number of extra lines
 endfunction
 
+" Toggle 'line wrapping' with associated settings
 function! scrollwrapped#wraptoggle(...) abort
-  " Toggle 'line wrapping' with associated settings
-  if a:0 " if non-zero number of args
+  if a:0  " if non-zero number of args
     let toggle = a:1
   else
-    let toggle = (1 - &l:wrap)
+    let toggle = 1 - &l:wrap
   endif
   if toggle == 1
-    " Display options that make more sense with wrapped lines
-    let &g:scrolloff = 0 " this setting is global! need an autocmd!
-    let &l:wrap = 1
     let &l:colorcolumn = 0
-    " Basic wrap mode navigation, swap visual and absolute maps
+    let &g:scrolloff = 0  "  this setting is global! need an autocmd!
+    let &l:wrap = 1
     noremap  <buffer> k  gk
     noremap  <buffer> j  gj
     noremap  <buffer> ^  g^
@@ -111,13 +112,10 @@ function! scrollwrapped#wraptoggle(...) abort
     nnoremap <buffer> I  g^i
     nnoremap <buffer> gA A
     nnoremap <buffer> gI I
-
   else
-    " Disable previous options
-    let &g:scrolloff = g:scrollwrapped_scrolloff
     let &l:wrap = 0
     let &l:colorcolumn = (has('gui_running') ? '0' : &g:colorcolumn)
-    " Disable previous maps
+    let &g:scrolloff = g:scrollwrapped_scrolloff
     silent! unmap  <buffer> k
     silent! unmap  <buffer> j
     silent! unmap  <buffer> ^
@@ -135,47 +133,41 @@ function! scrollwrapped#wraptoggle(...) abort
   endif
 endfunction
 
+" Helper function that returns one of two values: the wrapped line height of given
+" line, or a list of *actual* column numbers where *virtual* line breaks have been
+" placed by vim. Numbers correspond to first char of each *virtual* col.
 function! scrollwrapped#wrapped_line_props(linecol, line) abort
-  " Helper function that returns one of two values:
-  " 1. The wrapped line height of given line.
-  " 2. A list of *actual* column numbers where *virtual* line breaks have
-  "    been placed by vim. Numbers correspond to first char of each *virtual* col.
+  " First figure out indents
   if 'lc' !~# a:linecol
     echom 'Error: Mode string must be either [l]ine or [c]ol.'
     return -1
   endif
-
-  " First figure out indents
   let string = getline(a:line)
-  let width = winwidth(0) - (&l:nu || &l:rnu) * &l:numberwidth " exclude region for numbers
+  let width = winwidth(0) - s:numberwidth() - s:signwidth()
   if exists('&breakindent') && &l:breakindent
     let n_indent = max([0, match(string, '^ \+\zs')])
   else
     let n_indent = 0
   endif
-
   " Iterate through pieces of string
   let offset = 0
   let colnum = 1
   let colstarts = [1]
   let lineheight = 1
   let counter = 0
-  while len(string) + 1 >= width " must include newline character
-    let counter += 1
-
+  while len(string) + 1 >= width  " must include newline character
     " Determine offset due to 'linebreak' feature
     " Note: This won't be perfect! Consecutive non-whitespace characters
     " in breakat seem to *prevent* breaking, for example. But close enough.
     " Note: Need to escape the dash or won't work sometimes (try searching [*-+])
+    let counter += 1
     if &l:linebreak
       let test = s:reverse(string[0:width-1])
       let offset = match(test, '[' . escape(&l:breakat, '-') . ']')
-      " let offset = match(test, '[' . &l:breakat . ']\(\w\|\s\)') "breaks shit
     endif
-    let colnum += (width - offset - n_indent) " the *actual* column number at first position
-    let colstarts += [colnum] " add column to list
-    let lineheight += 1 " increment line
-
+    let colnum += width - offset - n_indent  " the *actual* column number at first position
+    let colstarts += [colnum]  " add column to list
+    let lineheight += 1  " increment line
     " Note since vim uses 0-indexing, position <width> is 1 char after end
     " Also make sure we trim leading spaces
     " Note: Older versions of Vim require math expressions within index
@@ -191,20 +183,20 @@ function! scrollwrapped#wrapped_line_props(linecol, line) abort
   return (a:linecol ==# 'l' ? lineheight : colstarts)
 endfunction
 
+" Primary scrolling function. Works by calling winrestview with a
+" new topline and lnum. We adjust 'topline' based on wrapping.
+" * a:nlines is the number of lines
+" * a:updown is whether to scroll down or up
+" * a:move is whether to move cursor across lines when there is nothing
+"   left to scroll, as with normal/builtin vim scrolling.
 function! scrollwrapped#scroll(nlines, updown, move) abort
-  " Primary scrolling function. Works by calling winrestview with a
-  " new topline and lnum. We adjust 'topline' based on wrapping.
-  " * a:nlines is the number of lines
-  " * a:updown is whether to scroll down or up
-  " * a:move is whether to move cursor across lines when there is nothing
-  "   left to scroll, as with normal/builtin vim scrolling.
   let s:debug = 0
   let winline = winline()
   if 'ud' !~# a:updown
     echom 'Error: Mode string must be either [u]p or [d]own.'
     return
   endif
-  let scrolloff = &g:scrolloff " global only!
+  let scrolloff = &g:scrolloff  " global only!
   let topline_init = line('w0')
   let nfolded_init = s:nfolded(a:updown)
   let &g:scrolloff = 0
@@ -216,16 +208,14 @@ function! scrollwrapped#scroll(nlines, updown, move) abort
     let motion = +1
   endif
 
-
   " Figure out the new *top* line
   " Will set this with winrestview
   if !&l:wrap
     " Wrap not toggled
     let topline = s:nextline(motion * a:nlines, topline_init)
     let scrolled = a:nlines  " a:nlines is read-only variable, so re-assign
-
   else
-    " Determine new line iteratively
+    " Figure out the top line iteratively
     " NOTE: Folded lines should not affect this algorithm.
     let counter = 0
     let scrolled = 0
@@ -235,14 +225,13 @@ function! scrollwrapped#scroll(nlines, updown, move) abort
       let topline = s:nextline(motion, topline)
       let lineheight = scrollwrapped#wrapped_line_props('l', topline)
       let scrolled += lineheight
-      if lineheight == -1 " indicates error
+      if lineheight == -1  " indicates error
         return
       endif
-      " Break if this isn't working out
       let counter += 1
-      if counter == s:tolerance
+      if counter == s:tolerance  " bail out
         echohl WarningMsg
-        echom 'Warning: Failed determining new line!'
+        echom 'Warning: Failed to determine the new top window line.'
         echohl None
         break
       endif
@@ -254,7 +243,6 @@ function! scrollwrapped#scroll(nlines, updown, move) abort
     if s:debug
       echom 'Old topline: ' . line('w0') . ' New topline: ' . topline . ' Visual motion: ' . scrolled . ' Target: ' . a:nlines
     endif
-
     " Optionally *backtrack* by single line if using the previous topline option would
     " have been a bit closer to 'n' lines. Re-enforces moving by at least one line.
     let scrollback = abs(scrolled - lineheight - a:nlines) < abs(scrolled - a:nlines)
@@ -268,19 +256,16 @@ function! scrollwrapped#scroll(nlines, updown, move) abort
     endif
   endif
 
-  " Figure out how to correspondingly move *cursor* to match
-  " the actual virtual lines scrolls, i.e. 'scrolled'
-  " WARNING: numberwidth will *lie* if you have more line numbers than it permits,
-  " so you should instead test the number of lines directly
+  " Figure out how to correspondingly move *cursor* to match the
+  " actual virtual lines scrolls, i.e. the 'scrolled'.
   let curline = line('.')
-  let numberwidth = max([len(string(line('$'))) + 1, &l:numberwidth])
   let nfolded = s:nfolded(a:updown)
-  let wincol = wincol() - numberwidth - 1
+  let wincol = wincol() - s:numberwidth() - s:signwidth() - 1
   if !&l:wrap
-    " Wrap not toggled
+    " Line wrapping is not toggled. Just get the cursor column
+    " and the current line.
     let curcol = wincol
     let curline = s:nextline(motion * a:nlines, curline)
-
   else
     " Determine which wrapped line we are on, and therefore,
     " the number of window columns we *have* to traverse
@@ -289,7 +274,7 @@ function! scrollwrapped#scroll(nlines, updown, move) abort
     let curline_height = len(colstarts)
     let idx = index(map(copy(colstarts), curcol . '>=v:val'), 0)
     if idx == -1  " cursor is sitting on the last virtual line of 'curline'
-      let curline_offset = curline_height - 1 " offset from first virtual line of current line
+      let curline_offset = curline_height - 1  " offset from first virtual line of current line
     elseif idx > 0
       let curline_offset = idx - 1
     else  " should never happen -- would mean cursor is in column '0' because colstarts always starts with 1
@@ -299,30 +284,25 @@ function! scrollwrapped#scroll(nlines, updown, move) abort
     if s:debug
       echom 'Current line: ' . curline . ' virtual num: ' . curline_offset . ' colstarts: ' . join(colstarts,', ')
     endif
-
-    " Determine the new cursorline, and offset down that line
-    " Possible that the line at top of screen moves while the current much
-    " bigger line does not, so account for that (if statement below)
-    " The scroll_init will be the *required* visual lines scrolled if
-    " we move the cursor line up or down
+    " Determine the new cursorline, and offset down that line. Possible that the line
+    " at top of screen moves while the current much bigger line does not, so account
+    " for that (if statement below). The scroll_init will be the *required* visual
+    " lines scrolled if we move the cursor line up or down.
     if a:updown ==# 'u'
-      let scroll_init = curline_offset " how many virtual lines to the first one
+      let scroll_init = curline_offset  " how many virtual lines to the first one
     else
-      let scroll_init = curline_height - curline_offset " how many virtual lines to start of next line (e.g. if height is 2, offset is 1, we're at the bottom; just scroll one more)
+      let scroll_init = curline_height - curline_offset  " how many virtual lines to start of next line (e.g. if height is 2, offset is 1, we're at the bottom; just scroll one more)
     endif
     if scrolled < (scroll_init + (a:updown ==# 'u'))
       " Case where we do not move lines
       " * If going up, scroll_init is distance to first virtual line of *this line*, so
-      "   scroll_init *equal* to scrolled is acceptable (hence, increment RHS of
-      "   inequality by 1)
+      "   scroll_init *equal* to scrolled is acceptable (hence, increment RHS by 1).
       " * If going down, scroll_init is distance to first virtual line of *next line*,
-      "   so need scroll_init to be 1 *more* than scrolled for us to be able to stay on
-      "   current line.
+      "   so need scroll_init to be 1 *more* than scrolled to stay on the current line.
       let curline_offset += motion * scrolled
       if s:debug
         echom 'Not changing line.'
       endif
-
     else
       " Case where we do move lines
       " Idea is e.g. if we are on 2nd out of 4 visual lines, want to go to next one,
@@ -330,7 +310,7 @@ function! scrollwrapped#scroll(nlines, updown, move) abort
       " by line heights until enough.
       let qline = curline
       let scroll = scroll_init
-      let scrolled_cur = scroll_init " virtual to reach (up) first one on this line or (down) first one on next line
+      let scrolled_cur = scroll_init  " virtual to reach (up) first one on this line or (down) first one on next line
       while scrolled_cur <= scrolled
         let counter += 1
        " Determine line height
@@ -339,37 +319,35 @@ function! scrollwrapped#scroll(nlines, updown, move) abort
         if s:debug
           echom 'Lineheight: ' . lineheight . ' Scroll: ' . scrolled_cur . ' Target: ' . scrolled
         endif
-        let qline += motion " corresponds to (up) previous line or (down) this line.
-        let lineheight = scrollwrapped#wrapped_line_props('l', qline) " necessary scroll to get to next/previous first line
-        let scrolled_cur += lineheight " add, then test
+        let qline += motion  " corresponds to (up) previous line or (down) this line.
+        let lineheight = scrollwrapped#wrapped_line_props('l', qline)  " necessary scroll to get to next/previous first line
+        let scrolled_cur += lineheight  " add, then test
         if counter == s:tolerance
           break
         endif
       endwhile
-
       " Figure our remaining virtual lines to be scrolled
       " The scrolled-scrolled_cur just gives scrolling past *cursor line* virtual lines,
       " plus the lineheights
-      let scrolled_cur -= lineheight " number of lines scrolled if we move up to first/last virtual line of curline
-      let remainder = scrolled-scrolled_cur " number left
+      let scrolled_cur -= lineheight  " number of lines scrolled if we move up to first/last virtual line of curline
+      let remainder = scrolled-scrolled_cur  " number left
       if a:updown ==# 'u'
-        if remainder == 0 " don't have to move to previous line at all
+        if remainder == 0  " don't have to move to previous line at all
           let curline = qline+1
           let curline_offset = 0
         else
           let curline = qline
-          let curline_offset = lineheight-remainder " e.g. if remainder is 1, lineheight is 3, want curline 'offset' to be 2
+          let curline_offset = lineheight-remainder  " e.g. if remainder is 1, lineheight is 3, want curline 'offset' to be 2
         endif
       else
         let curline = qline
-        let curline_offset = remainder " minimum remainder is 1
+        let curline_offset = remainder  " minimum remainder is 1
       endif
       if s:debug
         let lineheight = scrollwrapped#wrapped_line_props('l', curline)
         echom 'Destination line: ' . curline . ' Remainder: ' . remainder . ' Destination height: ' . lineheight . ' Offset: ' . curline_offset
       endif
     endif
-
     " Get the column number for winrestview
     " The min() call is to avoid errors that crop up due to those brute-force
     " while-loop breaks above when tolerance is exceeded
@@ -384,9 +362,8 @@ function! scrollwrapped#scroll(nlines, updown, move) abort
     endif
   endif
 
-  " Offset 'current line' by difference between numbers of folded lines
-
   " Finally restore to the new column
+  " Todo: Also account for folds using nfolded and nfolded_init.
   call winrestview({
     \ 'topline': max([topline, 0]),
     \ 'lnum': curline,
