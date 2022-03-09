@@ -33,18 +33,10 @@ command! -nargs=? WrapToggle call scrollwrapped#wraptoggle(<args>)
 command! LineHeight echom string(scrollwrapped#wrapped_line_props('l', '.'))
 command! ColStarts echom string(scrollwrapped#wrapped_line_props('c', '.'))
 
-" Normal mode maps
-nnoremap <silent> <C-f> :call scrollwrapped#scroll(winheight(0), 'd', 1)<CR>
-nnoremap <silent> <C-b> :call scrollwrapped#scroll(winheight(0), 'u', 1)<CR>
-nnoremap <silent> <C-d> :call scrollwrapped#scroll(winheight(0) / 2, 'd', 1)<CR>
-nnoremap <silent> <C-u> :call scrollwrapped#scroll(winheight(0) / 2, 'u', 1)<CR>
-nnoremap <silent> <C-j> :call scrollwrapped#scroll(winheight(0) / 4, 'd', 1)<CR>
-nnoremap <silent> <C-k> :call scrollwrapped#scroll(winheight(0) / 4, 'u', 1)<CR>
-
-" Closest reasonable thing for visual mode
-vnoremap <silent> <expr> <C-f>  winheight(0) . '<C-e>' . winheight(0) . 'gj'
-vnoremap <silent> <expr> <C-b>  winheight(0) . '<C-y>' . winheight(0) . 'gk'
-vnoremap <silent> <expr> <C-d>  (winheight(0) / 2) . '<C-e>' . (winheight(0) / 2) . 'gj'
-vnoremap <silent> <expr> <C-u>  (winheight(0) / 2) . '<C-y>' . (winheight(0) / 2) . 'gk'
-vnoremap <silent> <expr> <C-j>  (winheight(0) / 4) . '<C-e>' . (winheight(0) / 4) . 'gj'
-vnoremap <silent> <expr> <C-k>  (winheight(0) / 4) . '<C-y>' . (winheight(0) / 4) . 'gk'
+" Add default maps
+noremap <C-f> <Cmd>call scrollwrapped#scroll(winheight(0), 'd', 1)<CR>
+noremap <C-b> <Cmd>call scrollwrapped#scroll(winheight(0), 'u', 1)<CR>
+noremap <C-d> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 'd', 1)<CR>
+noremap <C-u> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 'u', 1)<CR>
+noremap <C-j> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 'd', 1)<CR>
+noremap <C-k> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 'u', 1)<CR>
