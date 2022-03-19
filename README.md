@@ -16,7 +16,6 @@ cursor line is adjusted `j` and `k`. Although the cursor sometimes jumps from le
 right, owing to vim trying to preserve the column position with scrolling, this is a
 vast improvement on the default vim scrolling behavior.
 
-<!-- ![](rec.gif) -->
 <img src="rec.gif" width="600">
 
 Documentation
