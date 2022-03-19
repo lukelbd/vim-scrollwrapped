@@ -138,7 +138,7 @@ endfunction
 " placed by vim. Numbers correspond to first char of each *virtual* col.
 function! scrollwrapped#wrapped_line_props(linecol, line) abort
   " First figure out indents
-  if 'lc' !~# a:linecol
+  if a:linecol !~# '^[lc]$'
     echom 'Error: Mode string must be either [l]ine or [c]ol.'
     return -1
   endif
