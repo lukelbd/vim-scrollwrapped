@@ -15,7 +15,7 @@
 "------------------------------------------------------------------------------"
 " Options
 if !exists('g:scrollwrapped_wrap_filetypes')
-  let g:scrollwrapped_wrap_filetypes = ['bib', 'tex', 'markdown', 'rst', 'liquid']
+  let g:scrollwrapped_wrap_filetypes = ['bib', 'liquid', 'markdown', 'rst', 'tex']
 endif
 if !exists('g:scrollwrapped_scrolloff')
   let g:scrollwrapped_scrolloff = 4

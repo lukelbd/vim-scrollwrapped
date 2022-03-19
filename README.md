@@ -36,7 +36,7 @@ that motion keys follow the *wrapped lines* instead of the actual lines. That is
 
 `g:scrollwrapped_wrap_filetypes` specifies the filetypes for which `:WrapToggle` is
 called automatically when the file is opened. By default, this is
-`['bib', 'tex', 'markdown', 'rst', 'liquid']`.
+`['bib', 'liquid', 'markdown', 'rst', 'tex']`.
 
 Installation
 ============
