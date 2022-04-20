@@ -20,6 +20,9 @@ endif
 if !exists('g:scrollwrapped_scrolloff')
   let g:scrollwrapped_scrolloff = 4
 endif
+if !exists('g:scrollwrapped_tolerance')
+  let g:scrollwrapped_tolerance = 100
+endif
 
 " Autocommands
 augroup scrollwrapped
