@@ -39,8 +39,8 @@ augroup END
 
 " Toggle command and others
 command! -nargs=? WrapToggle call scrollwrapped#toggle(<args>)
-command! LineHeight echom string(scrollwrapped#props('l', '.'))
-command! ColStarts echom string(scrollwrapped#props('c', '.'))
+command! WrapHeight echom string(scrollwrapped#props('l', '.'))
+command! WrapStarts echom string(scrollwrapped#props('c', '.'))
 
 " Add default maps
 noremap <C-f> <Cmd>call scrollwrapped#scroll(winheight(0), 'd', 1)<CR>
