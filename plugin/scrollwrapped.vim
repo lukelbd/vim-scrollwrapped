@@ -26,15 +26,8 @@ endif
 " Autocommands
 augroup scrollwrapped
   au!
-  au FileType * if !get(b:, 'wrap_toggle_applied', 0)
-    \ | exe 'WrapToggle ' . (index(g:scrollwrapped_wrap_filetypes, &ft) != -1)
-    \ | let b:wrap_toggle_applied = 1
-    \ | endif
-  au BufEnter * if &l:wrap
-    \ | let &g:scrolloff = 0
-    \ | else
-    \ | let &g:scrolloff = g:scrollwrapped_scrolloff
-    \ | endif
+  exe 'au FileType ' . join(g:scrollwrapped_wrap_filetypes, ',') . ' call scrollwrapped#toggle(1, 1)'
+  au BufEnter * let &g:scrolloff = &l:wrap ? 0 : g:scrollwrapped_scrolloff
 augroup END
 
 " Toggle command and others

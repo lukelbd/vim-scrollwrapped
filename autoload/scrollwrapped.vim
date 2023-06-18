@@ -82,6 +82,7 @@ endfunction
 function! scrollwrapped#toggle(...) abort
   let state = &l:wrap
   let toggle = a:0 ? a:1 : 1 - state
+  let suppress = a:0 > 1 ? a:2 : 0
   let scrollwrapped_maps = {
     \  'k': 'gk', 'j': 'gj', '^': 'g^', '$': 'g$', '0': 'g0',
     \  'gj': 'j', 'gk': 'k', 'g^': '^', 'g$': '$', 'g0': '0',
@@ -96,7 +97,9 @@ function! scrollwrapped#toggle(...) abort
     for [key, val] in items(scrollwrapped_maps)
       exe 'noremap <buffer> ' . key . ' ' . val
     endfor
-    echom 'Line wrapping enabled.'
+    if !suppress
+      echom 'Line wrapping enabled.'
+    endif
   else
     let &l:wrap = 0
     let &l:colorcolumn = &g:colorcolumn
@@ -104,7 +107,9 @@ function! scrollwrapped#toggle(...) abort
     for key in keys(scrollwrapped_maps)
       exe 'silent! unmap <buffer> ' . key
     endfor
-    echom 'Line wrapping disabled.'
+    if !suppress
+      echom 'Line wrapping disabled.'
+    endif
   endif
 endfunction
 
