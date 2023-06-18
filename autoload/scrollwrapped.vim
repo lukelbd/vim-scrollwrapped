@@ -1,6 +1,6 @@
-"-----------------------------------------------------------------------------"
+"-----------------------------------------------------------------------------
 " Functions for scrolling in presence of wrapped lines
-"-----------------------------------------------------------------------------"
+"-----------------------------------------------------------------------------
 " Helper functions
 " Warning: The numberwidth will *lie* if you have more line numbers
 " than it permits, so must instead test the number of lines directly.
@@ -80,23 +80,23 @@ endfunction
 " Note: This overrides user local mappings if present. Could work
 " around this but probably not worth it.
 function! scrollwrapped#toggle(...) abort
-  if a:0  " if non-zero number of args
-    let toggle = a:1
-  else
-    let toggle = 1 - &l:wrap
-  endif
+  let state = &l:wrap
+  let toggle = a:0 ? a:1 : 1 - state
   let scrollwrapped_maps = {
     \  'k': 'gk', 'j': 'gj', '^': 'g^', '$': 'g$', '0': 'g0',
     \  'gj': 'j', 'gk': 'k', 'g^': '^', 'g$': '$', 'g0': '0',
     \  'A': 'g$a', 'I': 'g^i', 'gA': 'A', 'gI': 'I'
     \ }
-  if toggle == 1
+  if state == toggle
+    return
+  elseif toggle == 1
     let &l:wrap = 1
     let &l:colorcolumn = 0
     let &g:scrolloff = 0  "  this setting is global! need an autocmd!
     for [key, val] in items(scrollwrapped_maps)
       exe 'noremap <buffer> ' . key . ' ' . val
     endfor
+    echom 'Line wrapping enabled.'
   else
     let &l:wrap = 0
     let &l:colorcolumn = &g:colorcolumn
@@ -104,6 +104,7 @@ function! scrollwrapped#toggle(...) abort
     for key in keys(scrollwrapped_maps)
       exe 'silent! unmap <buffer> ' . key
     endfor
+    echom 'Line wrapping disabled.'
   endif
 endfunction
 

@@ -1,8 +1,8 @@
-"------------------------------------------------------------------------------"
+"------------------------------------------------------------------------------
 " Name:   scrollwrapped.vim
 " Author: Luke Davis (lukelbd@gmail.com)
 " Date:   2018-09-03
-"------------------------------------------------------------------------------"
+"------------------------------------------------------------------------------
 " Disgustingly over-engineered solution to scrolling wrapped lines in vim
 " Note: Vim forces us to always start at beginning of wrapped line, but don't
 " necessarily have to end on one. So, scrolling is ***always controlled***
@@ -11,7 +11,7 @@
 " coerces current topline to the next one if we try to put cursor on the bottom
 " line when it runs off-screen. Not sure of robust way to fix this. Probably
 " best to just let cursor get 'pushed' up the screen when this happens.
-"------------------------------------------------------------------------------"
+"------------------------------------------------------------------------------
 " Options
 if !exists('g:scrollwrapped_wrap_filetypes')
   let g:scrollwrapped_wrap_filetypes = ['bib', 'liquid', 'markdown', 'rst', 'tex']
