@@ -21,21 +21,21 @@ vast improvement on the default vim scrolling behavior.
 Documentation
 =============
 
-This plugin overrides the default scrolling commands and `<C-f>`, `<C-b>`, `<C-d>`, and
-`<C-u>`, and introduces new quarter page scrolling commands `<C-j>` and `<C-k>`. For
-each of these mappings, the plugin scrolls by as close as possible to one, one half, or
-one quarter of the window height without messing up the relative cursor line position.
+By default, this plugin overrides the default scrolling commands and `<C-f>`, `<C-b>`,
+`<C-d>`, and `<C-u>`, and introduces new quarter page scrolling commands `<C-j>` and
+`<C-k>` (use `let g:scrollwrapped_nomap = 0` to disable these default mappings). These
+scroll by as close as possible to one, one half, or one quarter of the window
+height without changing the cursor position relative to the window.
 
-`:WrapToggle` toggles line wrapping for the current buffer. Call this without arguments
-to toggle the wrapping mode on and off, or with `1` or `0` to set the wrapping mode to
-the on or off states. This also applies a series of buffer local normal mode mappings so
-that motion keys follow the *wrapped lines* instead of the actual lines. That is, the
-`j`, `k`, `^`, `$`, `0`, `A`, and `I` commands are swapped with the `gj`, `gk`, `g^`,
-`g$`, `g0`, `gA`, and `gI` commands.
+The `:WrapToggle` command toggles the `&wrap` setting along with the `&colorcolumn` and
+`&scrolloff` settings for the current buffer. Use without arguments to toggle on and
+off or with `0` or `1` to set the state. This command also applies a series of buffer
+local normal mode mappings so that motion keys follow *wrapped lines* (that is, `j`, `k`,
+`^`, `$`, `0`, `A`, and `I` are swapped with `gj`, `gk`, `g^`, `g$`, `g0`, `gA`, and `gI`).
 
-`g:scrollwrapped_wrap_filetypes` specifies the filetypes for which `:WrapToggle` is
-called automatically when the file is opened. By default, this is
-`['bib', 'liquid', 'markdown', 'rst', 'tex']`.
+The `g:scrollwrapped_wrap_filetypes` option specifies the filetypes that should
+have wrapping enabled by default. This will call `:WrapToggle 1` whenever the file
+is opened. By default, this is `['bib', 'liquid', 'markdown', 'rst', 'tex']`.
 
 Installation
 ============

@@ -159,8 +159,7 @@ endfunction
 " new topline and lnum. We adjust 'topline' based on wrapping.
 " * a:nlines is the number of lines
 " * a:updown is whether to scroll down or up
-" * a:move is whether to move cursor across lines when there is nothing
-"   left to scroll, as with normal/builtin vim scrolling.
+" * a:move is whether to move cursor across lines when nothing left to scroll
 function! scrollwrapped#scroll(nlines, updown, move) abort
   let winline = winline()
   if 'ud' !~# a:updown

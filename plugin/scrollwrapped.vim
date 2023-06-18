@@ -13,14 +13,17 @@
 " best to just let cursor get 'pushed' up the screen when this happens.
 "------------------------------------------------------------------------------
 " Options
-if !exists('g:scrollwrapped_wrap_filetypes')
-  let g:scrollwrapped_wrap_filetypes = ['bib', 'liquid', 'markdown', 'rst', 'tex']
+if !exists('g:scrollwrapped_nomap')
+  let g:scrollwrapped_nomap = 0
 endif
 if !exists('g:scrollwrapped_scrolloff')
   let g:scrollwrapped_scrolloff = 4
 endif
 if !exists('g:scrollwrapped_tolerance')
   let g:scrollwrapped_tolerance = 100
+endif
+if !exists('g:scrollwrapped_wrap_filetypes')
+  let g:scrollwrapped_wrap_filetypes = ['bib', 'liquid', 'markdown', 'rst', 'tex']
 endif
 
 " Autocommands
@@ -36,9 +39,11 @@ command! WrapHeight echom string(scrollwrapped#props('l', '.'))
 command! WrapStarts echom string(scrollwrapped#props('c', '.'))
 
 " Add default maps
-noremap <C-f> <Cmd>call scrollwrapped#scroll(winheight(0), 'd', 1)<CR>
-noremap <C-b> <Cmd>call scrollwrapped#scroll(winheight(0), 'u', 1)<CR>
-noremap <C-d> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 'd', 1)<CR>
-noremap <C-u> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 'u', 1)<CR>
-noremap <C-j> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 'd', 1)<CR>
-noremap <C-k> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 'u', 1)<CR>
+if g:scrollwrapped_nomap
+  noremap <C-f> <Cmd>call scrollwrapped#scroll(winheight(0), 'd', 1)<CR>
+  noremap <C-b> <Cmd>call scrollwrapped#scroll(winheight(0), 'u', 1)<CR>
+  noremap <C-d> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 'd', 1)<CR>
+  noremap <C-u> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 'u', 1)<CR>
+  noremap <C-j> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 'd', 1)<CR>
+  noremap <C-k> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 'u', 1)<CR>
+endif
