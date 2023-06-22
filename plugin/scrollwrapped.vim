@@ -39,7 +39,7 @@ command! WrapHeight echom string(scrollwrapped#props('l', '.'))
 command! WrapStarts echom string(scrollwrapped#props('c', '.'))
 
 " Add default maps
-if g:scrollwrapped_nomap
+if !g:scrollwrapped_nomap
   noremap <C-f> <Cmd>call scrollwrapped#scroll(winheight(0), 'd', 1)<CR>
   noremap <C-b> <Cmd>call scrollwrapped#scroll(winheight(0), 'u', 1)<CR>
   noremap <C-d> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 'd', 1)<CR>
