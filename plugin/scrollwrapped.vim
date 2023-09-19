@@ -35,15 +35,15 @@ augroup END
 
 " Toggle command and others
 command! -nargs=? WrapToggle call scrollwrapped#toggle(<args>)
-command! WrapHeight echom string(scrollwrapped#props('l', '.'))
-command! WrapStarts echom string(scrollwrapped#props('c', '.'))
+command! WrapHeight echom 'Current wrapped line height: ' . scrollwrapped#props(0, '.')
+command! WrapStarts echom 'Current wrapped line columns: ' . join(scrollwrapped#props(1, '.'), ', ')
 
 " Add default maps
 if !g:scrollwrapped_nomap
-  noremap <C-f> <Cmd>call scrollwrapped#scroll(winheight(0), 'd', 1)<CR>
-  noremap <C-b> <Cmd>call scrollwrapped#scroll(winheight(0), 'u', 1)<CR>
-  noremap <C-d> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 'd', 1)<CR>
-  noremap <C-u> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 'u', 1)<CR>
-  noremap <C-j> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 'd', 1)<CR>
-  noremap <C-k> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 'u', 1)<CR>
+  noremap <C-f> <Cmd>call scrollwrapped#scroll(winheight(0), 0, 1)<CR>
+  noremap <C-b> <Cmd>call scrollwrapped#scroll(winheight(0), 1, 1)<CR>
+  noremap <C-d> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 0, 1)<CR>
+  noremap <C-u> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 1, 1)<CR>
+  noremap <C-j> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 0, 1)<CR>
+  noremap <C-k> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 1, 1)<CR>
 endif
