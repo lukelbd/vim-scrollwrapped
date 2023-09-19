@@ -1,22 +1,6 @@
 "-----------------------------------------------------------------------------
 " Functions for scrolling in presence of wrapped lines
 "-----------------------------------------------------------------------------
-" Helper functions
-" Warning: The numberwidth will *lie* if you have more line numbers
-" than it permits, so must instead test the number of lines directly.
-function! s:reverse(string) abort  " reverse the lines
-  let result = reverse(split(a:string, '.\zs'))
-  return join(result, '')
-endfunction
-function! s:numberwidth() abort
-  let width = max([len(string(line('$'))) + 1, &l:numberwidth])
-  return &l:number || &l:relativenumber ? width : 0
-endfunction
-function! s:signwidth() abort
-  return &l:signcolumn ==# 'yes' || &l:signcolumn ==# 'auto'
-    \ && !empty(sign_getplaced(bufnr(), {'group': '*'})[0]['signs']) ? 2 : 0
-endfunction
-
 " Get next line accounting for closed folds
 " Note: Could include this as part of 'lineheight' but then folded lines would
 " count toward the number of scrolled lines, which we do not want.
@@ -189,7 +173,87 @@ function! s:adjust(nlines, backward, scroll) abort
   return [curline, curline_offset]
 endfunction
 
-" Toggle 'line wrapping' with associated settings
+" Helper functions
+" Warning: The numberwidth will *lie* if you have more line numbers
+" than it permits, so must instead test the number of lines directly.
+function! scrollwrapped#reverse(string) abort  " reverse the lines
+  let result = reverse(split(a:string, '.\zs'))
+  return join(result, '')
+endfunction
+function! scrollwrapped#numberwidth() abort
+  let width = max([len(string(line('$'))) + 1, &l:numberwidth])
+  return &l:number || &l:relativenumber ? width : 0
+endfunction
+function! scrollwrapped#signwidth() abort
+  return &l:signcolumn ==# 'yes' || &l:signcolumn ==# 'auto'
+    \ && !empty(sign_getplaced(bufnr(), {'group': '*'})[0]['signs']) ? 2 : 0
+endfunction
+
+" Helper function to return wrapped line height or columns where line is broken
+" Note: This will not be be perfect. Consecutive non-whitespace characters
+" in breakat seem to *prevent* breaking, for example. But close enough.
+function! scrollwrapped#props(cols, line) abort
+  let string = getline(a:line)
+  let width = winwidth(0) - scrollwrapped#numberwidth() - scrollwrapped#signwidth()
+  if exists('&breakindent') && &l:breakindent
+    let n_indent = max([0, match(string, '^ \+\zs')])
+  else
+    let n_indent = 0
+  endif
+  let offset = 0
+  let colnum = 1
+  let colstarts = [1]
+  let lineheight = 1
+  let counter = 0
+  while len(string) + 1 >= width  " must include newline character
+    let counter += 1
+    if &l:linebreak
+      let test = scrollwrapped#reverse(string[0:width-1])
+      let offset = match(test, '[' . escape(&l:breakat, '-') . ']')
+    endif
+    let colnum += width - offset - n_indent  " column number at first position
+    let colstarts += [colnum]  " add column to list
+    let lineheight += 1  " increment line
+    " vint: -ProhibitUsingUndeclaredVariable
+    let string = repeat(' ', n_indent) . substitute(string[width - offset:], '^ \+', '', '')
+    if counter == g:scrollwrapped_tolerance
+      break
+    endif
+  endwhile
+  return a:cols ? colstarts : lineheight
+endfunction
+
+" Primary scrolling function. Calls winrestview with a new topline
+" and line number, with topline adjusted 'topline' based on wrapping.
+" Todo: Get this to work with folds better. Sometimes have moving
+" up-and-down issues when position algorithm selects is under fold.
+function! scrollwrapped#scroll(nlines, backward) abort
+  let scrolloff = &g:scrolloff  " nglobal only
+  let &g:scrolloff = 0
+  let motion = a:backward ? -1 : 1
+  if &l:wrap  " figure out new *top* line
+    let [topline, scrolled] = s:topline(a:backward, a:nlines)
+  else  " wrapping disabled
+    let [topline, scrolled] = [s:nextline(motion * a:nlines, line('w0')), a:nlines]
+  endif
+  let wincols = wincol() - scrollwrapped#numberwidth() - scrollwrapped#signwidth() - 1
+  if &l:wrap  " figure out where to put cursor to match lines scrolled
+    let [curline, curcol] = s:position(scrolled, a:backward, wincols)
+  else  " wrapping disabled
+    let [curline, curcol] = [s:nextline(motion * a:nlines, line('.')), wincols]
+  endif
+  let view = {
+    \ 'topline': max([topline, 0]),
+    \ 'lnum': curline,
+    \ 'leftcol': 0,
+    \ 'col': curcol
+    \ }
+  call winrestview(view)
+  let &g:scrolloff = scrolloff
+  return
+endfunction
+
+" Helper function to toggle 'line wrapping' with associated settings
 " Note: This overrides user local mappings if present. Could work
 " around this but probably not worth it.
 function! scrollwrapped#toggle(...) abort
@@ -224,69 +288,4 @@ function! scrollwrapped#toggle(...) abort
       echom 'Line wrapping disabled.'
     endif
   endif
-endfunction
-
-" Return one of two things: The wrapped line height for the given line number, or
-" the *actual* columns where *virtual* line breaks were placed by vim for wrapping.
-" Note: This will not be be perfect. Consecutive non-whitespace characters
-" in breakat seem to *prevent* breaking, for example. But close enough.
-function! scrollwrapped#props(cols, line) abort
-  let string = getline(a:line)
-  let width = winwidth(0) - s:numberwidth() - s:signwidth()
-  if exists('&breakindent') && &l:breakindent
-    let n_indent = max([0, match(string, '^ \+\zs')])
-  else
-    let n_indent = 0
-  endif
-  let offset = 0
-  let colnum = 1
-  let colstarts = [1]
-  let lineheight = 1
-  let counter = 0
-  while len(string) + 1 >= width  " must include newline character
-    let counter += 1
-    if &l:linebreak
-      let test = s:reverse(string[0:width-1])
-      let offset = match(test, '[' . escape(&l:breakat, '-') . ']')
-    endif
-    let colnum += width - offset - n_indent  " column number at first position
-    let colstarts += [colnum]  " add column to list
-    let lineheight += 1  " increment line
-    " vint: -ProhibitUsingUndeclaredVariable
-    let string = repeat(' ', n_indent) . substitute(string[width - offset:], '^ \+', '', '')
-    if counter == g:scrollwrapped_tolerance
-      break
-    endif
-  endwhile
-  return a:cols ? colstarts : lineheight
-endfunction
-
-" Primary scrolling function. Calls winrestview with a new topline
-" and line number, with topline adjusted 'topline' based on wrapping.
-" Todo: Get this to work with folds better. Sometimes have moving
-" up-and-down issues when position algorithm selects is under fold.
-function! scrollwrapped#scroll(nlines, backward) abort
-  let scrolloff = &g:scrolloff  " nglobal only
-  let &g:scrolloff = 0
-  let motion = a:backward ? -1 : 1
-  if &l:wrap  " figure out new *top* line
-    let [topline, scrolled] = s:topline(a:backward, a:nlines)
-  else  " wrapping disabled
-    let [topline, scrolled] = [s:nextline(motion * a:nlines, line('w0')), a:nlines]
-  endif
-  let wincols = wincol() - s:numberwidth() - s:signwidth() - 1
-  if &l:wrap  " figure out where to put cursor to match lines scrolled
-    let [curline, curcol] = s:position(scrolled, a:backward, wincols)
-  else  " wrapping disabled
-    let [curline, curcol] = [s:nextline(motion * a:nlines, line('.')), wincols]
-  endif
-  let view = {
-    \ 'topline': max([topline, 0]),
-    \ 'lnum': curline,
-    \ 'leftcol': 0,
-    \ 'col': curcol
-    \ }
-  call winrestview(view)
-  let &g:scrolloff = scrolloff
-  return
 endfunction
