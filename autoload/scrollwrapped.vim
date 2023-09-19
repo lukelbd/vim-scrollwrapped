@@ -261,12 +261,11 @@ function! scrollwrapped#props(cols, line) abort
   return a:cols ? colstarts : lineheight
 endfunction
 
-" Primary scrolling function. Calls winrestview with a new topline and lnum, with
-" topline adjusted 'topline' based on wrapping. Final arg indicates whether to move
-" cursor across lines when nothing is left to scroll.
-" Todo: Get this to work with folds better. Sometimes have moving up-and-down
-" issues when position algorithm selects is under fold.
-function! scrollwrapped#scroll(nlines, backward, move) abort
+" Primary scrolling function. Calls winrestview with a new topline
+" and line number, with topline adjusted 'topline' based on wrapping.
+" Todo: Get this to work with folds better. Sometimes have moving
+" up-and-down issues when position algorithm selects is under fold.
+function! scrollwrapped#scroll(nlines, backward) abort
   let scrolloff = &g:scrolloff  " nglobal only
   let &g:scrolloff = 0
   let motion = a:backward ? -1 : 1

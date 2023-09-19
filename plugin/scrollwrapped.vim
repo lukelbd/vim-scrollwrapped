@@ -40,10 +40,10 @@ command! WrapStarts echom 'Current wrapped line columns: ' . join(scrollwrapped#
 
 " Add default maps
 if !g:scrollwrapped_nomap
-  noremap <C-f> <Cmd>call scrollwrapped#scroll(winheight(0), 0, 1)<CR>
-  noremap <C-b> <Cmd>call scrollwrapped#scroll(winheight(0), 1, 1)<CR>
-  noremap <C-d> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 0, 1)<CR>
-  noremap <C-u> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 1, 1)<CR>
-  noremap <C-j> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 0, 1)<CR>
-  noremap <C-k> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 1, 1)<CR>
+  noremap <C-f> <Cmd>call scrollwrapped#scroll(winheight(0), 0)<CR>
+  noremap <C-b> <Cmd>call scrollwrapped#scroll(winheight(0), 1)<CR>
+  noremap <C-d> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 0)<CR>
+  noremap <C-u> <Cmd>call scrollwrapped#scroll(winheight(0) / 2, 1)<CR>
+  noremap <C-j> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 0)<CR>
+  noremap <C-k> <Cmd>call scrollwrapped#scroll(winheight(0) / 4, 1)<CR>
 endif
