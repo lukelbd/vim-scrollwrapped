@@ -13,11 +13,10 @@
 " best to just let cursor get 'pushed' up the screen when this happens.
 "------------------------------------------------------------------------------
 " Options
+" Note: Local scrolloff added in patch 8.1.0864. Toggling on-off will silently fail in
+" older versions. See https://github.com/vim/vim/commit/375e339?diff-split
 if !exists('g:scrollwrapped_nomap')
   let g:scrollwrapped_nomap = 0
-endif
-if !exists('g:scrollwrapped_scrolloff')
-  let g:scrollwrapped_scrolloff = 4
 endif
 if !exists('g:scrollwrapped_tolerance')
   let g:scrollwrapped_tolerance = 100
@@ -30,7 +29,6 @@ endif
 augroup scrollwrapped
   au!
   exe 'au FileType ' . join(g:scrollwrapped_wrap_filetypes, ',') . ' call scrollwrapped#toggle(1, 1)'
-  au BufEnter * let &g:scrolloff = &l:wrap ? 0 : g:scrollwrapped_scrolloff
 augroup END
 
 " Toggle command and others

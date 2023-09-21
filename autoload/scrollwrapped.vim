@@ -228,8 +228,8 @@ endfunction
 " Todo: Get this to work with folds better. Sometimes have moving
 " up-and-down issues when position algorithm selects is under fold.
 function! scrollwrapped#scroll(nlines, backward) abort
-  let scrolloff = &g:scrolloff  " nglobal only
-  let &g:scrolloff = 0
+  let scrolloff = &l:scrolloff
+  let &l:scrolloff = 0
   let motion = a:backward ? -1 : 1
   if &l:wrap  " figure out new *top* line
     let [topline, scrolled] = s:topline(a:backward, a:nlines)
@@ -249,8 +249,7 @@ function! scrollwrapped#scroll(nlines, backward) abort
     \ 'col': curcol
     \ }
   call winrestview(view)
-  let &g:scrolloff = scrolloff
-  return
+  let &l:scrolloff = scrolloff
 endfunction
 
 " Helper function to toggle 'line wrapping' with associated settings
@@ -270,7 +269,7 @@ function! scrollwrapped#toggle(...) abort
   elseif toggle == 1
     let &l:wrap = 1
     let &l:colorcolumn = 0
-    let &g:scrolloff = 0  "  this setting is global! need an autocmd!
+    let &l:scrolloff = 0
     for [key, val] in items(scrollwrapped_maps)
       exe 'noremap <buffer> ' . key . ' ' . val
     endfor
@@ -280,7 +279,7 @@ function! scrollwrapped#toggle(...) abort
   else
     let &l:wrap = 0
     let &l:colorcolumn = &g:colorcolumn
-    let &g:scrolloff = g:scrollwrapped_scrolloff
+    let &l:scrolloff = &g:scrolloff
     for key in keys(scrollwrapped_maps)
       exe 'silent! unmap <buffer> ' . key
     endfor
