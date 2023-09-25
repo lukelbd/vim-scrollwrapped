@@ -2,10 +2,9 @@
 " Author: Luke Davis (lukelbd@gmail.com)
 " Date:   2018-09-03
 "------------------------------------------------------------------------------
-" Disgustingly over-engineered solution to scrolling wrapped lines in vim
-" Note: Vim forces us to always start at beginning of wrapped line, but don't
-" necessarily have to end on one. So, scrolling is ***always controlled***
-" by the lines near the top of the screen!
+" Over-engineered solution to scrolling wrapped lines in vim. This plugin replaces
+" native, exact-line-count scrolling with an almost-line-count scrolling algorithm
+" that preserves window-relative line and column numbers.
 " Note: Function may misbehave in special circumstances -- i.e. vim always
 " coerces current topline to the next one if we try to put cursor on the bottom
 " line when it runs off-screen. Not sure of robust way to fix this. Probably

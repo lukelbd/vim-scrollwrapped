@@ -160,15 +160,12 @@ function! scrollwrapped#props(line, cols) abort
   let string = getline(a:line) . "\n"  " include end-of-line newline
   let breaks = '[' . escape(&l:breakat, '-') . ']\+'
   let width = winwidth(0) - scrollwrapped#numberwidth() - scrollwrapped#signwidth()
-  let indent = 0  " indent adjustment
-  let spaces = ''
   if exists('&breakindent') && &l:breakindent
-    let indent = max([0, match(string, '^ \+\zs')])
-    " vint: -ProhibitUsingUndeclaredVariable
-    let spaces = repeat(' ', indent)
+    let spaces = substitute(matchstr(string, '^\s*'), '\t', repeat(' ', &l:tabstop), 'g')
+  else  " empty leading space
+    let spaces = ''
   endif
   let counter = 0
-  let offset = 0
   let colstart = 1
   let colstarts = [1]
   let lineheight = 1
@@ -176,22 +173,23 @@ function! scrollwrapped#props(line, cols) abort
     if counter == g:scrollwrapped_tolerance
       break
     endif
-    if &l:linebreak  " break on &breakat characters
-      let part = string[:width]  " character width + 1
+    if !&l:linebreak || string[width] ==# "\n"  " break at end-of-line character
+      let offset = 0
+    else  " break on &breakat characters
+      let part = string[:width]  " endpoint inclusive i.e. length width + 1
       let part = scrollwrapped#reverse(part)  " search in reverse
-      if part[0] !=# "\n"  " never start next line with breakat
-        let break = part[0] =~# breaks
-        let offset = match(part, breaks, 0, 1 + break)  " 1st or 2nd match
-        let offset = offset == -1 ? 0 : offset  " ignore if not found
-      endif
+      let break = part[0] =~# breaks  " never start line with &breakat
+      let offset = match(part, breaks, 0, 1 + break)  " 1st or 2nd match
+      let offset = offset == -1 ? 0 : offset  " ignore if not found
     endif
-    " vint: -ProhibitUsingUndeclaredVariable
-    let string = spaces . string[width - offset:]  " e.g. width 5 = char 6
-    let exclude = indent * (counter > 0)  " exclude previous indent
-    let colstart += width - offset - exclude
+    " vint: -ProhibitUsingUndeclaredVariable ·
+    let string = spaces . string[width - offset + 1:]  " e.g. width 5 -> start char 6
+    let exclude = counter ? len(spaces) : 0  " exclude previous indent
+    let colstart += width - offset - exclude + 1
     let colstarts += [colstart]  " add column number to list
     let lineheight += 1  " increment line
     let counter += 1
+    " echom 'String ' . counter . ': ' . substitute(string[:width], ' ', '·', 'g')
   endwhile
   return a:cols ? colstarts : lineheight
 endfunction
