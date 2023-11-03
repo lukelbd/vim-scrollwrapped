@@ -4,6 +4,7 @@
 " Get next line accounting for closed folds
 " Note: Could include this as part of 'lineheight' but then folded lines would
 " count toward the number of scrolled lines, which we do not want.
+scriptencoding utf-8
 function! s:nextline(line, nlines) abort
   let line = a:line
   if a:nlines < 0  " jump to start of fold if scrolling up (one line puts us on new fold)
@@ -200,7 +201,9 @@ endfunction
 " up-and-down issues when position algorithm selects is under fold.
 function! scrollwrapped#scroll(nlines, backward) abort
   let motion = a:backward ? -1 : 1
+  let leftcol = winsaveview()['leftcol']
   let scrolloff = &l:scrolloff
+  call winrestview({'leftcol': 0})  " needed for algorithm
   let &l:scrolloff = 0
   if &l:wrap  " figure out new *top* line
     let [topline, scroll] = s:topline(a:nlines, a:backward)
@@ -214,10 +217,10 @@ function! scrollwrapped#scroll(nlines, backward) abort
     let [newline, newcol] = [s:nextline(line('.'), motion * a:nlines), wincol]
   endif
   let view = {
-    \ 'topline': max([topline, 0]),
-    \ 'lnum': newline,
-    \ 'leftcol': 0,
     \ 'col': newcol - 1,
+    \ 'lnum': newline,
+    \ 'leftcol': leftcol,
+    \ 'topline': max([topline, 0]),
     \ }
   call winrestview(view)
   let &l:scrolloff = scrolloff
