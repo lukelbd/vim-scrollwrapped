@@ -245,7 +245,8 @@ function! scrollwrapped#toggle(...) abort
     let &l:colorcolumn = 0
     let &l:scrolloff = 0
     for [key, val] in items(scrollwrapped_maps)
-      exe 'noremap <buffer> ' . key . ' ' . val
+      let map = key =~# '[AI]$' ? 'nnoremap' : 'noremap'
+      exe map . ' <buffer> ' . key . ' ' . val
     endfor
     if !suppress
       echom 'Line wrapping enabled.'
@@ -255,7 +256,8 @@ function! scrollwrapped#toggle(...) abort
     let &l:colorcolumn = &g:colorcolumn
     let &l:scrolloff = &g:scrolloff
     for key in keys(scrollwrapped_maps)
-      exe 'silent! unmap <buffer> ' . key
+      let map = key =~# '[AI]$' ? 'nunmap' : 'unmap'
+      silent! exe map . ' <buffer> ' . key
     endfor
     if !suppress
       echom 'Line wrapping disabled.'
