@@ -148,8 +148,8 @@ function! scrollwrapped#numberwidth() abort
   return &l:number || &l:relativenumber ? width : 0
 endfunction
 function! scrollwrapped#signwidth() abort
-  return &l:signcolumn ==# 'yes' || &l:signcolumn ==# 'auto'
-    \ && !empty(sign_getplaced(bufnr(), {'group': '*'})[0]['signs']) ? 2 : 0
+  return &l:foldcolumn + (&l:signcolumn ==# 'yes' || &l:signcolumn ==# 'auto'
+    \ && !empty(sign_getplaced(bufnr(), {'group': '*'})[0]['signs']) ? 2 : 0)
 endfunction
 
 " Helper function to return wrapped line height or columns where line is broken
