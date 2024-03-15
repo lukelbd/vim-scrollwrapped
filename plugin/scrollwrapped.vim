@@ -31,8 +31,8 @@ augroup END
 
 " Toggle command and others
 command! -nargs=? WrapToggle call scrollwrapped#toggle(<args>)
-command! WrapHeight echom 'Current wrapped line height: ' . scrollwrapped#props('.', 0)
-command! WrapStarts echom 'Current wrapped line columns: ' . join(scrollwrapped#props('.', 1), ', ')
+command! WrapHeight echom 'Current wrapped line height: ' . len(scrollwrapped#starts('.'))
+command! WrapStarts echom 'Current wrapped line starts: ' . join(scrollwrapped#starts('.'), ', ')
 
 " Add default maps
 if !g:scrollwrapped_nomap
