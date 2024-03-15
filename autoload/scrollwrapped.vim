@@ -172,12 +172,12 @@ function! scrollwrapped#starts(line) abort
     if counter == g:scrollwrapped_tolerance
       break
     endif
-    let [part1, part2] = s:getparts(string, width)
+    let [part1, part2] = s:getparts(string, 0, width)
     if &l:linebreak && matchstr(part1, '.$') !=# "\n"
       let ipart = scrollwrapped#reverse(part1)
       let ibreak = strgetchar(ipart, 0) =~# breaks  " never start with &breakat
       let offset = match(ipart, breaks, 0, 1 + ibreak)  " first or second match
-      let [part1, part2] = offset > 0 ? s:getparts(string, width - offset) : [part1, part2]
+      let [part1, part2] = offset > 0 ? s:getparts(string, 0, width - offset) : [part1, part2]
     endif
     " vint: -ProhibitUsingUndeclaredVariable ·
     let nignore = counter ? strcharlen(indent) : 0  " exclude indent indent
@@ -188,7 +188,7 @@ function! scrollwrapped#starts(line) abort
     call add(colstarts, colstart)
     " echom 'Part ' . counter . ': ' . substitute(string[:width], ' ', '·', 'g')
   endwhile
-  return a:0 && a:1 ? colstarts : len(colstarts)
+  return colstarts
 endfunction
 
 " Primary scrolling function. Calls winrestview with a new topline
@@ -211,7 +211,7 @@ function! scrollwrapped#scroll(nlines, backward) abort
   else  " wrapping disabled
     let [newline, newstart] = [s:nextline(line('.'), scroll), 0]
   endif
-  if foldclosed(newline) > 0
+  if foldclosed(line('.')) > 0
     let newcol = getcursorcharpos()[2]
   else  " infer column from getparts 
     let curcol = wincol() - scrollwrapped#numberwidth() - scrollwrapped#signwidth()
