@@ -7,7 +7,7 @@ to jump around erratically. This can be very disorienting when navigating docume
 
 The problem is that vim always scrolls by exact line counts. If line wrapping is
 enabled, this requires changing the cursor position, since the first line shown in
-the window must be the start of a wrapped line (i.e. not a line fragment).
+the window must be the start of a wrapped line (i.e. not a line continuation fragment).
 
 This plugin corrects this annoying behavior (see the below gif). Even with a tiny
 window, the cursor line does not change during scrolling -- it only changes with
