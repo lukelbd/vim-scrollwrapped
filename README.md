@@ -28,9 +28,9 @@ manually with `scrollwrapped#scroll` (see `plugin/scrollwrapped.vim`).
 
 Use the `:WrapToggle` command to call `:set wrap scrolloff=0 colorcolumn=0` for the
 current buffer. Using this command without arguments toggles the state, and using with
-arguments `1` or `0` turns wrapping on or off. This command also makes various motions
-follow wrapped lines using buffer-local maps that swap `j`, `k`, `^`, `$`, `0`, `A`, and
-`I` with `gj`, `gk`, `g^`, `g$`, `g0`, `gA`, and `gI` (respectively).
+arguments `1` or `0` turns wrapping on or off. This command also makes normal and visual
+-mode motions follow wrapped lines by defining buffer-local maps that swap `j`, `k`, `^`,
+`$`, `0`, `A`, and `I` with `gj`, `gk`, `g^`, `g$`, `g0`, `gA`, and `gI` (respectively).
 
 Use the `g:scrollwrapped_wrap_filetypes` variable to specify file types that should
 have wrapping enabled by default (i.e., `:WrapToggle 1` is called when a corresponding
