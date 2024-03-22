@@ -35,7 +35,7 @@ mode motions follow wrapped lines by defining buffer-local maps that swap `j`, `
 Use the `g:scrollwrapped_wrap_filetypes` variable to specify file types that should
 have wrapping enabled by default (i.e., `:WrapToggle 1` is called when a corresponding
 file is opened; default is `['bib', 'liquid', 'markdown', 'rst', 'tex']`). Use the
-`:WrapHeights` and `:WrapStarts` commands to debug the scrolling behavior by printing
+`:WrapHeight` and `:WrapStarts` commands to debug the scrolling behavior by printing
 the wrapped line count and column starts detected by the scrolling algorithm (should
 account for tab widths, fold/sign/number column widths, and multi-byte characters).
 
