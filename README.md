@@ -1,40 +1,43 @@
 Scrolling wrapped lines
 =======================
 
-After enabling vim line wrapping with `:set wrap`, the default scrolling commands
-`<C-f>`, `<C-b>`, `<C-d>`, and `<C-u>` can cause the cursor position relative to the
-window to jump around erratically. This is very disorienting when navigating documents.
+When vim line wrapping is enabled with `:set wrap`, the default scrolling maps `<C-f>`,
+`<C-b>`, `<C-d>`, and `<C-u>` may cause the cursor position relative to the window
+to jump around erratically. This can be very disorienting when navigating documents.
 
-The problem is that vim always tries to scroll by exact line counts, but since the
-first line of the window must be the start of a wrapped line (i.e. not a line
-continuation fragment), scrolling often changes the window-relative cursor line.
+The problem is that vim always scrolls by exact line counts. If line wrapping is
+enabled, this requires changing the cursor position, since the first line shown in
+the window must be the start of a wrapped line (i.e. not a line fragment).
 
 This plugin corrects this annoying behavior (see the below gif). Even with a tiny
-window, the cursor does not move up and down during scrolling. It only moves when
-explicitly adjusting the cursor line with `j` and `k`. Although the cursor sometimes
-jumps horizontally, owing to vim trying to preserve the relative column position, this
-is a vast improvement on the default vim scrolling behavior.
+window, the cursor line does not change during scrolling -- it only changes with
+explicit motions (e.g. `j`, `k`). The new scrolling maps also work when line wrapping
+is off and account for closed folds, tab widths, and multi-byte characters.
 
 <img src="rec.gif" width="600">
 
 Documentation
 =============
 
-This plugin overrides the default full-page scrolling maps `<C-f>` and `<C-b>`,
-half-page scrolling maps `<C-d>` and `<C-u>`, and introduces new quarter-page scrolling
-maps `<C-j>` and `<C-k>` (use `let g:scrollwrapped_nomap = 0` to disable these maps).
-The mappings scroll by as close as possible to one, one half, or one quarter of the
-window height without changing the window-relative cursor position.
+By default, this plugin overwrites the full-page scrolling maps `<C-f>` and `<C-b>`,
+the half-page scrolling maps `<C-d>` and `<C-u>`, and introduces new quarter-page
+scrolling maps `<C-j>` and `<C-k>`. These scroll by as close as possible to one, one
+half, or one quarter of the window height without changing the window-relative cursor
+position. The maps can be disabled with `let g:scrollwrapped_nomap = 0`, then applied
+manually with `scrollwrapped#scroll` (see `plugin/scrollwrapped.vim`).
 
-The `:WrapToggle` command toggles the `&wrap` setting along with the `&colorcolumn` and
-`&scrolloff` settings for the current buffer. Use without arguments to toggle on and
-off or with `0` or `1` to set the state. This command also applies a series of buffer
-local normal mode mappings so that motion keys follow *wrapped lines* (that is, `j`, `k`,
-`^`, `$`, `0`, `A`, and `I` are swapped with `gj`, `gk`, `g^`, `g$`, `g0`, `gA`, and `gI`).
+Use the `:WrapToggle` command to call `:set wrap scrolloff=0 colorcolumn=0` for the
+current buffer. Using this command without arguments toggles the state, and using with `0`
+arguments `1` or `0` turns wrapping on or off. This command also makes various motions
+follow wrapped lines using buffer-local maps that swap `j`, `k`, `^`, `$`, `0`, `A`, and
+`I` with `gj`, `gk`, `g^`, `g$`, `g0`, `gA`, and `gI` (respectively).
 
-The `g:scrollwrapped_wrap_filetypes` option specifies the filetypes that should
-have wrapping enabled by default. This will call `:WrapToggle 1` whenever the file
-is opened. By default, this is `['bib', 'liquid', 'markdown', 'rst', 'tex']`.
+Use the `g:scrollwrapped_wrap_filetypes` variable to specify file types that should
+have wrapping enabled by default (i.e., `:WrapToggle 1` is called when a corresponding
+file is opened; default is `['bib', 'liquid', 'markdown', 'rst', 'tex']`). Use the
+`:WrapHeights` and `:WrapStarts` commands to debug the scrolling behavior by printing
+the wrapped line count and column starts detected by the scrolling algorithm (should
+account for tab widths, fold/sign/number column widths, and multi-byte characters).
 
 Installation
 ============
