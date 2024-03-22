@@ -21,9 +21,9 @@ Documentation
 
 By default, this plugin overwrites the full-page scrolling maps `<C-f>` and `<C-b>`,
 the half-page scrolling maps `<C-d>` and `<C-u>`, and introduces new quarter-page
-scrolling maps `<C-j>` and `<C-k>`. These scroll by as close as possible to one, one
-half, or one quarter of the window height without changing the window-relative cursor
-position. The maps can be disabled with `let g:scrollwrapped_nomap = 0`, then applied
+scrolling maps `<C-j>` and `<C-k>`. These scroll by as close as possible to the given
+window height without changing the window-relative cursor line or cursor column. The
+maps can be disabled with `let g:scrollwrapped_nomap = 0`, then applied
 manually with `scrollwrapped#scroll` (see `plugin/scrollwrapped.vim`).
 
 Use the `:WrapToggle` command to call `:set wrap scrolloff=0 colorcolumn=0` for the
