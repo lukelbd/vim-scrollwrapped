@@ -13,6 +13,8 @@
 " Options
 " Note: Local scrolloff added in patch 8.1.0864. Toggling on-off will silently fail in
 " older versions. See https://github.com/vim/vim/commit/375e339?diff-split
+exe exists('g:loaded_scrollwrapped') ? 'finish' : ''
+let g:loaded_scrollwrapped = 1
 if !exists('g:scrollwrapped_nomap')
   let g:scrollwrapped_nomap = 0
 endif
